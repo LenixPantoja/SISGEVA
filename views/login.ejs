@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <!-- Sweet Alert -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.0.2/dist/sweetalert2.min.css">
+    <title>Login</title>
+    <link rel="icon" type="image/png" href="/resources/sisgeva.png">
+</head>
+
+<body>
+    <div id="app">
+        <v-app>
+            <v-main class="d-flex align-center">
+                <template>
+                    <v-row style="justify-content: center; margin: 2px;" >
+                        <form method="post" action="login" id="frm">
+                            <v-container class="text-center" id="frm-c">
+                                <div class="12" id="contenedor">
+                                    <img src="/resources/imagen1.png" id="logo" />
+                                    <v-text-field 
+                                    id="user" 
+                                    name="user" outlined prepend-inner-icon="mdi-account"
+                                    color="primary">
+                                    </v-text-field>
+                                    </v-text-field>
+                                    <v-text-field 
+                                    id="password" 
+                                    name="password" 
+                                    type="password" outlined
+                                        :append-icon="show4 ? 'mdi-eye' : 'mdi-eye-off'"
+                                        :type="show4 ? 'text' : 'password'" prepend-inner-icon="mdi-key"
+                                        @click:append="show4 = !show4"></v-text-field>
+                                </div>
+                                <button type="submit" class="boton col-12">Ingresar</button>
+                            </v-container>
+                        </form>
+                    </v-row>
+                </template>
+            </v-main>
+        </v-app>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.0.2/dist/sweetalert2.all.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            vuetify: new Vuetify(),
+            data() {
+                return {
+                    show4: false,
+                }
+            }
+        })
+    </script>
+    <!-- En este caso se utiliza una herramienta llamada sweetalert, esta nos permite manejar varias notifiaciones al user -->
+    <% if(typeof alert !="undefined" ){%>
+        <!-- Como se usa un motor de platilla ejs la forma de interactuar con html es por medio de esta estructura <% %>-->
+        <script>
+            Swal.fire({ // estamos haciendo de la estructura de sweet donde declaramos un title, text, icon, button and timer, ahora para mandar informacion a esos campos hacemos uso de la estructura y dentro llamamos a las variables que llegan como paramtro
+                icon: '<%= alertIcon %>',
+                title: '<%= alertTitle %>',
+                text:  '<%= text %>',
+                showConfirmButton: false,
+                timer: '<%= timer %>',
+                backdrop: '#606f8c93',
+                width: 400,
+               
+            }).then(() => {
+                window.location = '/<%=ruta%>'
+            })
+        </script>
+        <%}%>
+
+    <style>
+        body,
+        #app {
+            background-color: #606F8C;
+        }
+
+         /* Works on Firefox */
+         *::-webkit-scrollbar {
+            width: 1px;
+        }
+
+        *::-webkit-scrollbar:hover {
+            width: 7px;
+        }
+
+        /* Estilos barra (thumb) de scroll */
+        *::-webkit-scrollbar-thumb {
+            background: #606F8C;
+            height: 4px;
+            border-radius: 4px;
+        }
+
+        /* Estilos track de scroll */
+        *::-webkit-scrollbar-track {
+            border-radius: 4px;
+            background: #606F8C;
+        }
+
+        *::-webkit-scrollbar-track:hover,
+        *::-webkit-scrollbar-track:active {
+            background: #d3e0fa42;
+        }
+
+        #logo {
+            width: 250px;
+            height: 90px;
+            margin-bottom: 30px;
+            margin-top: -8px;
+        }
+
+        .v-text-field {
+            border-radius: 10px;
+            width: 280px;
+            padding: 10px;
+            height: 70px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .v-text-field:hover {
+            box-shadow: 0 0 9px rgba(33, 33, 33, .2);
+            margin-bottom: 14px;
+            height: 56px;
+        }
+
+        .boton {
+            background-color: #606F8C;
+            border-radius: 10px;
+            padding: 14px;
+            color: white;
+            font-weight: 40px;
+            font-size: 19px;
+            width: 280px;
+            margin-top: 17px;
+        }
+
+        div[class*='swal2'] {
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            font-weight: bold;
+        }
+
+        #frm {
+            background-color: #939eb4f1;
+            border-radius: 12%;
+            box-shadow: 0 0 9px #95979bbb;
+            padding: 4px;
+        }
+
+        #frm:hover {
+            box-shadow: 0 0 9px #414346f1;
+        }
+
+        #frm-c {
+            background-color: white;
+            border-radius: 9%;
+            padding: 40px;
+        }
+    </style>
+</body>
+
+</html>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Hacemos uso de los cdn con los que se va a trabajar -->
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.0.2/dist/sweetalert2.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <title>Sedes</title>
+    <link rel="icon" type="image/png" href="/resources/logo_s.png"><!-- Se  llama al logo SISGEVA para el navegador -->
+     <!-- Importación del estilo para el componente SweetAlert2 -->
+     <style>
+        div[class*='swal2'] {
+            font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif; 
+        }
+    </style>
+
+</head>
+
+<body>
+    <!--Declaramos un div, este va abarcar todo los componenetes de vuetify, ademas en este se declaro un ID para luego llamarlo en vuetify -->
+
+    <div id="sede">
+
+        <v-app id="inspire">
+            <div>
+
+                <v-app-bar-nav-icon @click='drawer= !drawer'></v-app-bar-nav-icon>
+                    <v-toolbar-title style="position: absolute; top: 0; margin-left: 5%;">Sedes de Clinizad</v-toolbar-title>
+                    <div style="position: absolute; top: 0; right: 0;">
+
+                        <v-btn icon id="fullScreen" @click="toggleFullScreen()">
+
+                            <v-icon size="21"
+                                style="box-shadow: 0 0 5px #2f4978; color:#606F8C; background-color: white; border-radius: 100%; padding: 10px; font-weight: bold;">
+                                mdi-fullscreen</v-icon>
+                        </v-btn>
+                        <v-btn color="#FF0000" icon id="logout" href="logout">
+                            <v-icon size="21"
+                                style=" box-shadow: 0 0 5px #2f4978; color:#606F8C; background-color: white; border-radius: 100%; padding: 8px; font-weight: bold;">
+                                mdi-close</v-icon>
+                        </v-btn>
+
+            </div>
+                    <!-- Botón para crear una nueva sede -->
+
+                    <v-btn @click="formNuevo()" type="button" elevation="10"
+                        class="transition-swing v-btn v-btn--bottom v-btn--is-elevated v-btn--fab v-btn--fixed v-btn--has-bg v-btn--right v-btn--round theme--light v-size--large primary"
+                        style color="#0D47A1">
+                        <v-icon dark>mdi-plus</v-icon>
+                    </v-btn>
+                    <!-- Carta para la tabla que contendrá la lista de sedes de Clinizad -->
+                    <v-card class="mx-auto mt-5" color="transparent"  elevation="0">
+                        <!-- Tabla y formulario -->
+                        <v-simple-table class="mt-5">
+                            <template v-slot:default>
+                                <thead>
+                                    <tr class="blue darken-2">
+                                        <th class="white--text text-center">ID</th>
+                                        <th class="white--text text-center">SEDE</th>
+                                        <th class="white--text text-center">ACCIONES</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- llamamos la informacion que se encuentra en la DB para que la liste en la tabla -->
+                                    <tr class="text-center" v-for="sede in sedes" :key="sede.id_sede">
+                                        <!-- Hacemos uso del v-for, este permite recorrer un objeto-->
+                                        <td>{{ sede.id_sede }}</td>
+                                        <!-- con el objeto recorrido extraemos el ID de sede -->
+                                        <td>{{ sede.nom_sede }}</td>
+                                        <!-- con el objeto recorrido extraemos el NOMBRE de sede -->
+                                        <td>
+                                            <v-btn class="primary" dark x-small fab @click="formEditar(sede.nom_sede)">
+                                                <!-- Creamos un button para la parte de editar un registro, ademas hacemos uso de un icon -->
+                                                <v-icon>mdi-pencil</v-icon>
+                                            </v-btn>
+                                            <v-btn class="error" fab dark x-small @click="eliminar(sede.id_sede)">
+                                                <!-- Creamos un button para la parte de eliminar un registro, ademas hacemos uso de un icon -->
+                                                <v-icon>mdi-delete</v-icon>
+                                            </v-btn>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </template>
+                        </v-simple-table>
+                    </v-card>
+
+                    <!-- Diálogo para CREAR y EDITAR -->
+                    <v-dialog v-model="dialog" persistent max-width="600px">
+                        <v-card>
+                            <!-- En esta card se creara el formulario para add un registro -->
+                            <v-form ref="form" v-model="valid" lazy-validation>
+                                <v-card-title>
+                                    <span class="text-h5">Gestionar sede</span>
+                                    <!-- Se asigna un title para la gestion  -->
+                                </v-card-title>
+                                <v-card-text>
+                                    <v-container>
+                                        <v-row>
+                                            <input v-model="sede.id_sede" hidden></input>
+                                            <v-col cols="12">
+                                                <v-text-field v-model="sede.nom_sede" :rules="nameRules" label="* Nombre sede" required autofocus>{{sede.nom_sede}}
+                                                </v-text-field>
+                                                
+                                                <!-- creamos el campo para area, aqui manejamos validaciones con rules, esto se hace con fin de que los campos no esten vacios -->
+                                            </v-col>
+                                        </v-row>
+                                    </v-container>
+                                    <small>* Indica campo requerido</small>
+                                    <!-- Este es como un mensaje de adevertencia  -->
+                                </v-card-text>
+                                <v-card-actions>
+                                    <v-spacer></v-spacer>
+                                    <v-btn color="blue darken-1" text @click="dialog = false; reset();">Cancelar</v-btn>
+                                    <!-- Se crea el button cancelar, en este se maneja el @click que hace uso de unos metodos  -->
+                                    <v-btn color="blue darken-1" text @click="validate();">Guardar                                    
+                                    </v-btn>
+                                    <!-- Guarda la información, para ello llama al metodo validate  -->
+                                </v-card-actions>
+                            </v-form>
+                        </v-card>
+                    </v-dialog>
+
+                </v-main>
+
+                <!-- aqui continua el navbar, este muestra una lista con las clases que tenemos actualmente -->
+
+                <v-navigation-drawer v-model="drawer" absolute temporary>
+                    <v-list dense nav>
+                        
+                        <v-list-item link href='/empleados'>
+                            <!-- Nos redirecciona a la vista empleados -->
+                            <v-list-item-icon>
+                                <v-icon>mdi-account-multiple</v-icon><!-- Hacemos uso de un icon -->
+                            </v-list-item-icon>
+                            <v-list-item-content>
+                                <v-list-item-title>Empleados</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                        <v-list-item link href='/sedes'>
+                            <!-- Nos redirecciona a la vista sedes -->
+                            <v-list-item-icon>
+                                <v-icon>mdi-map</v-icon><!-- Hacemos uso de un icon -->
+                            </v-list-item-icon>
+                            <v-list-item-content>
+                                <v-list-item-title>Sedes</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+
+                        
+
+                        <v-list-item link href='/solicitud'>
+                            <!-- Nos redirecciona a la vista solicitud -->
+                            <v-list-item-icon>
+                                <v-icon>mdi-folder</v-icon><!-- Hacemos uso de un icon -->
+                            </v-list-item-icon>
+                            <v-list-item-content>
+                                <v-list-item-title>Solicitudes</v-list-item-title>
+                                <!-- Mandamos el nombre de la vista -->
+                            </v-list-item-content>
+                        </v-list-item>
+                    </v-list>
+                </v-navegation-drawer>
+            </div>
+        </v-app>
+    </div>
+
+    <!-- Hacemos uso de los cdn -->
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.js"
+        integrity="sha512-nqIFZC8560+CqHgXKez61MI0f9XSTKLkm0zFVm/99Wt0jSTZ7yeeYwbzyl0SGn/s8Mulbdw+ScCG41hmO2+FKw=="
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.0.2/dist/sweetalert2.all.min.js"></script>
+
+    <script>
+        // Llamamos a la api con respecto a su entidad
+
+        let url = 'http://localhost:3000/api/sede/';
+        // Se crea un nuevo campo vue, en este vamos a llamar al ID que declaramos en el div y inicializamos un nuevo componente de vuetify
+
+        new Vue({
+            el: '#sede',
+            vuetify: new Vuetify(),
+            data() {
+                return {
+                    sedes: [],//inicializamos el arreglo que creamos en v-for
+                    dialog: false,//inicializamos el dialog en false, es decir que cuando ejecuta la aplicacion el formulario no sea visible
+                    operacion: '', //inicializamos una variable que va a esperar una operacion x
+                    drawer: false,//inicializamos esta funcion en false para que cuando se haga clic en el navbar este se pueda desplegar
+                    right: null,// inicializamos esta funcion en null, esta permite cuadrar la lista del navbar
+                    sede: {
+                        id_sede: null,//inicializamos el id en nulo
+                        nom_sede: ''//inicializamos el nombre en vacio
+                    },
+                    valid: true,//Permite hacer la validacion de los campos del formulario, esta funcion se la declaro en el formulario
+                    nameRules: [
+                        v => !!v || 'El nombre de la sede es requerido',
+                        v => (v && v.length <= 100) || 'El nombre de la sede debe tener menos de 100 caracteres'
+                    ],// si el usuario no registra nada, este dara un error diciendo que el nombre del area es requerido
+                }
+            },
+            created() {
+                this.mostrar()//llamamos al metodo mostrar, este se encarga de mostrar el listado de DB
+            },
+            methods: {
+                //MÉTODOS PARA EL CRUD
+                mostrar: function () {
+                    axios.get(url)//Se ejecuta la peticion en la api
+                        .then(response => {
+                            this.sedes = response.data;//obtiene todos los datos desde la api
+                        })
+                },
+                crear: function () {//Metodo encargado de agregar una nueva sede
+                    let parametros = { nom_sede: this.sede.nom_sede };// Guardamos en la variable la información que llega por petición
+
+                    axios.post(url, parametros)//Se ejecuta la peticion en la api
+                        .then(response => {
+                            this.mostrar();//Actualiza la informacion en la tabla
+                        });
+                    this.sede.nom_sede = "";//El campo se volvera nulo
+
+                    const Toast = Swal.mixin({//Hacemos uso de una funccion de sweet para que cuando agregue el area salga una viñeta
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 2500,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Sede Registrada Exitosamente'
+                    })
+                },
+
+                editar: function () {// Metodo encargado de editar la informacion
+                    let parametros = { nom_sede: this.sede.nom_sede };// Guardamos en la variable la información que llega por petición
+                    axios.put(url + this.sede.id_sede, parametros)//Se ejecuta la peticion en la api
+                        .then(response => {
+                            this.mostrar();//Actualiza la informacion en la tabla
+                        })
+                        .catch(error => {
+                            console.log(error);//Captura el error
+                        });
+                    const Toast = Swal.mixin({//Hacemos uso de una funccion de sweet para que cuando agregue el area salga una viñeta
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3500,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Sede Editada Exitosamente'
+                    })
+                },
+
+                eliminar: function (id_sede) {//Metodo encargado de eliminar una sede
+                    Swal.fire({//Hacemos uso de una funccion de sweet para confirmar o cancelar una petición
+                        icon: 'warning',
+                        title: '¿Desea eliminar el registro?',
+                        confirmButtonText: 'Confirmar',
+                        showCancelButton: true,
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            //procedimiento borrar
+                            axios.delete(url + id_sede)//Si se confirma la petición se ejecuta la peticion en la api
+                                .then(response => {
+                                    this.mostrar();//Actualiza la información en la tabla
+                                });
+                            Swal.fire('¡Eliminado!', '', 'success')//Muestra un msg donde dice que la area fue borrada
+                        } else if (result.isDenied) {
+                        }
+                    });
+                },
+
+                guardar: function () {//Metodo que hace las operaciones de crear y editar en el formulario
+                    if (this.operacion == 'crear') {
+                        this.crear();//Si la  peticion que manda es crear, se llama al metodo crear
+                    }
+                    if (this.operacion == 'editar') {
+                        this.editar();//Si la peticion que manda es editar, se llama al metodo ediar
+                    }
+                    this.dialog = false;//Cuando se de al boton guardar se cierra el formulario
+                },
+                formNuevo: function () {//se crea un formulario nuevo con los campos vacios.
+                    this.dialog = true;
+                    this.operacion = 'crear';
+                    this.reset();
+                },
+                formEditar: function (nom_sede) {//Se llama al formulario para editar la nueva informacion que llega por paramtro
+                    
+                    this.sede.nom_sede = nom_sede;
+                    this.dialog = true;
+                    this.operacion = 'editar';
+                },
+                //Nos valida el formulario, esto con el fin de que el usuario no nos mande información vacia o erronea
+
+                validate() {
+                    if (this.$refs.form.validate())
+                        this.guardar();
+                },
+                //Resetea el formulario
+
+                reset() {
+                    this.$refs.form.reset()
+                },
+                //Resetea la validación del formulario
+
+                resetValidation() {
+                    this.$refs.form.resetValidation()
+                }
+
+            }
+        });
+    </script>
+
+
+
+
+
+
+</body>
+
+</html>

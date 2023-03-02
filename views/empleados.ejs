@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de empleados</title>
+    <!-- Importación de CDNS -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <!-- Importación de iconos para el material design -->
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <!-- Importación de Vuetify, el cual maneja el material design estilo aplicación android -->
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <!-- Importación del plugin SweetAlert2, el cual nos ayudará con las alertas de la aplicación -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.0.2/dist/sweetalert2.min.css">
+    <!-- Importación del estilo para el componente SweetAlert2 -->
+    <style>
+        div[class*='swal2'] {
+            font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+
+<body>
+    <div id="app">
+        <!-- Donde se va a alojar la aplicación Vue -->
+        <v-app>
+            <div>
+                <div>
+                    <v-app-bar-nav-icon @click='drawer= !drawer'></v-app-bar-nav-icon>
+                    <v-toolbar-title style="position: absolute; top: 0; margin-left: 5%;">Empleados de Clinizad
+                    </v-toolbar-title>
+                    <div style="position: absolute; top: 0; right: 0;">
+
+                        <v-btn icon id="fullScreen" @click="toggleFullScreen()">
+
+                            <v-icon size="21"
+                                style="box-shadow: 0 0 5px #2f4978; color:#606F8C; background-color: white; border-radius: 100%; padding: 10px; font-weight: bold;">
+                                mdi-fullscreen</v-icon>
+                        </v-btn>
+                        <v-btn color="#FF0000" icon id="logout" href="logout">
+                            <v-icon size="21"
+                                style=" box-shadow: 0 0 5px #2f4978; color:#606F8C; background-color: white; border-radius: 100%; padding: 8px; font-weight: bold;">
+                                mdi-close</v-icon>
+                        </v-btn>
+
+
+                    </div>
+
+
+                    <v-main>
+                        <!-- Botón flotante para crear un nuevo empleado, este al darle click hace el llamado al método formNuevo() -->
+                        <v-btn @click="formNuevo()" type="button" elevation="10"
+                            class="transition-swing v-btn v-btn--bottom v-btn--is-elevated v-btn--fab v-btn--fixed v-btn--has-bg v-btn--right v-btn--round theme--light v-size--large primary"
+                            style color="#0D47A1">
+                            <v-icon dark>mdi-plus</v-icon>
+                        </v-btn>
+                        
+                            <v-text-field v-model="search" append-icon="mdi-magnify" label="Buscar empleado" rounded outlined
+                                    hide-details class="col-3" style="max-width: 350px">
+                        </v-text-field>
+                        
+                        
+                        <!-- Carta para la tabla que contendrá la lista de empleados de Clinizad -->
+                        <v-card class="mx-auto mt-5" color="transparent" elevation="0">
+                            <!-- Tabla donde se mostrarán los empleados -->
+                            <v-simple-table class="mt-4">
+                                <template v-slot:default>
+                                    <thead>
+                                        <tr class="blue darken-2">
+                                            <!-- Encabezados de la tabla -->
+                                            <th class="white--text text-center">IDENTIFICACIÓN</th>
+                                            <th class="white--text text-center">EMPLEADO</th>
+                                            <th class="white--text text-center">CORREO</th>
+                                            <th class="white--text text-center">CARGO</th>
+                                            <th class="white--text text-center">FECHA INICIO CONTRATO</th>
+                                            <th class="white--text text-center">SEDE</th>
+                                            <th class="white--text text-center">ÁREA</th>
+                                            <th class="white--text text-center">ACCIONES</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Se hace a cada empleado, los cuales vienen de un arreglo formato json desde la API -->
+                                        <tr class="text-center" v-for="empleado in empleados"
+                                            :key="empleado.id_empleado">
+                                            <!-- Extrae cada atributo del empleado para mostrarlo en el cuerpo de la tabla -->
+                                            <td>{{ empleado.id_empleado}}</td>
+                                            <td>{{ empleado.empleado}}</td>
+                                            <td>{{ empleado.email}}</td>
+                                            <td>{{ empleado.nom_cargo}}</td>
+                                            <td>{{ empleado.fechaContrato}}</td>
+                                            <td>{{ empleado.nom_sede }}</td>
+                                            <td>{{ empleado.nom_area}}</td>
+
+                                            <td>
+                                                <!-- Botón que permitirá editar la información a cada empleado, este al darle click nos hace el llamado al método formEditar y le envia los atributos del empleado al mismo -->
+                                                <v-btn class="primary" dark x-small fab
+                                                    @click="formEditar(empleado.id_empleado, empleado.nom_empleado, empleado.email, empleado.nom_cargo, empleado.fecha, empleado.nom_sede, empleado.nom_area)">
+                                                    <!-- Se hace uso de un icono de lápiz -->
+                                                    <v-icon>mdi-pencil</v-icon>
+                                                </v-btn>
+                                                <!-- Botón que permitirá eliminar un empleado de la tabla, este al darle click hace el llamado al método eliminar y le envia el id del empleado a eliminar por parámetro -->
+                                                <v-btn class="error" fab dark x-small
+                                                    @click="eliminar(empleado.id_empleado)">
+                                                    <!-- Se hace uso de un icono de bote de basura -->
+                                                    <v-icon>mdi-delete</v-icon>
+                                                </v-btn>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </template>
+                            </v-simple-table>
+                        </v-card>
+
+                        <!-- Diálogo para crear y editar la información del empleado -->
+                        <v-dialog v-model="dialog" persistent max-width="600px">
+                            <v-card>
+
+                               
+                                </template>
+                                <template v-slot:item="data">
+                                    <template v-if="typeof data.item !== 'object'">
+                                        <v-list-item-content v-text="data.item">
+                                        </v-list-item-content>
+                                    </template>
+                                    <template v-else>
+                                        <v-list-item-content>
+                                            <v-row>
+                                                <v-col
+                                                    style="margin-top: -14px; text-align: center;">
+                                                    <v-list-item-tittle>
+                                                        <v-list-item-avatar>
+                                                            <v-icon style="color: #606F8C;">
+                                                                mdi-tooltip-account
+                                                            </v-icon>
+                                                        </v-list-item-avatar>
+                                                    </v-list-item-tittle>
+                                                    <v-list-item-subtitle
+                                                        style="color: #606F8C; margin-top: -5px;">
+                                                        <strong>Sede:</strong>
+                                                        {{data.item.sede_empleado}}
+                                                    </v-list-item-subtitle>
+                                                </v-col>
+                                                <v-col>
+                                                    <v-list-item-title>
+                                                        {{data.item.id_empleado}}
+                                                    </v-list-item-title>
+                                                    <br>
+                                                    <v-list-item-subtitle>
+                                                        <strong>Contrato:</strong>
+                                                        {{data.item.f_contrato}}
+                                                    </v-list-item-subtitle>
+                                                </v-col>
+                                                <v-col>
+                                                    <v-list-item-title>
+                                                        <strong>{{
+                                                            data.item.nombres_empleado}}</strong>
+                                                    </v-list-item-title>
+                                                    <br>
+                                                    <v-list-item-subtitle>
+                                                        <strong>Periodos:</strong>
+                                                        {{data.item.periodos_dis}}
+                                                        <strong> Días: </strong>
+                                                        {{data.item.dias}}
+                                                    </v-list-item-subtitle>
+                                                </v-col>
+                                                <v-col>
+                                                    <v-list-item-title
+                                                        v-html="'Area ' + data.item.area_empleado">
+                                                    </v-list-item-title>
+                                                    <br>
+                                                    <v-list-item-subtitle>
+                                                        <strong>Cargo:</strong>
+                                                        {{data.item.nom_cargo}}
+                                                    </v-list-item-subtitle>
+                                                </v-col>
+                                            </v-row>
+                                        </v-list-item-content>
+                                    </template>
+                                </template>
+                                
+                                <v-form ref="form" v-model="valid" lazy-validation>
+                                    <v-card-title>
+                                        <!-- título de la tarjeta que mostrará el formulario -->
+                                        <span class="text-h5">Crear empleado</span>
+                                    </v-card-title>
+                                    <v-card-text>
+                                        <v-container>
+                                            <v-row>
+                                                <!-- Campo de texto de tipo number que permitirá registrar y mostrar la identificación del empleado, este solo permite 10 caracteres-->
+                                                <v-col cols="12">
+                                                    <v-text-field type="number" :rules="idRules" :counter="10"
+                                                        v-model="empleado.id_empleado" label="* Identificación empleado"
+                                                        required autofocus>{{empleado.id_empleado}}</v-text-field>
+                                                </v-col>
+                                                <!-- Campo de texto que permitirá registrar y mostrar el nombre del empleado, este solo permite 100 caracteres -->
+                                                <v-col cols="12">
+                                                    <v-text-field type="text" :rules="nameRules" :counter="100"
+                                                        v-model="empleado.nom_empleado" label="* Nombre empleado"
+                                                        required>{{empleado.nom_empleado}}</v-text-field>
+                                                </v-col>
+
+
+                                                <!-- Campo de texto que permitirá registrar y mostrar la dirección del empleado, este solo permite 100 caracteres -->
+
+                                                <!-- Campo de texto de tipo email que permitirá registrar y mostrar el correo del empleado, este solo permite 100 caracteres y permite correos validos -->
+                                                <v-col cols="6">
+                                                    <v-text-field type="email" :rules="emailRules" :counter="100"
+                                                        v-model="empleado.email_empleado" label="* Correo empleado"
+                                                        required>{{empleado.email}}</v-text-field>
+                                                </v-col>
+                                                <!-- Campo de texto que permitirá registrar la contraseña del empleado -->
+                                                <v-col cols="6">
+                                                    <v-text-field type="password" :rules="passwordRules"
+                                                        v-model="empleado.password" label="* Contraseña empleado"
+                                                        required>
+                                                        {{empleado.password}}</v-text-field>
+                                                </v-col>
+
+
+                                                <!-- Campo de texto  de tipo date que permitirá registrar y mostrar la fecha del inicio contrato del empleado -->
+                                                <v-col cols="12">
+                                                    <v-text-field type="date" :rules="dateRules"
+                                                        v-model="empleado.fecha_inicio_contrato"
+                                                        label="* Fecha inicio del contrato" required>{{
+                                                        empleado.fecha_inicio_contrato }}</v-text-field>
+                                                </v-col>
+
+                                                <v-col cols="6">
+
+                                                    <v-select :items="cargos" :rules="cargoRules"
+                                                        v-model="empleado.cargo" item-text="nombreCargo"
+                                                        item-value="idCargo" label="* Cargo empleado" required>
+                                                        {{cargos.nombreCargo}}</v-select>
+
+                                                </v-col>
+
+
+                                                <v-col cols="6">
+
+                                                    <v-select :items="sedes" :rules="sedesRules"
+                                                        v-model="empleado.sede" item-text="nom_sede"
+                                                        item-value="id_sede" label="* Sede empleado" required>
+                                                        {{sede.nom_sede}}</v-select>
+
+                                                </v-col>
+
+                                                <!-- Combo que permitirá registrar y mostrar las areas que hay en el sistema, esto lo trae de la base de datos sisgeva -->
+                                                <v-col cols="6">
+                                                    <v-select :items="areas" :rules="areaRules"
+                                                        v-model="empleado.area_empleado" item-text="nom_area"
+                                                        item-value="id_area" label="* Área empleado" required>
+                                                        {{area.nom_area}}</v-select>
+                                                </v-col>
+
+
+                                                <!-- Combo que permitirá registrar y mostrar los roles del empleado -->
+                                                <v-col cols="6">
+                                                    <v-select :items="['No Administrador', 'Administrador', ]"
+                                                        :rules="rollRules" v-model="empleado.roll_empleado"
+                                                        label="* Roll empleado" required>{{empleado.roll_empleado}}
+                                                    </v-select>
+                                                </v-col>
+
+
+                                            </v-row>
+                                        </v-container>
+                                        <small>* Indica campo requerido</small>
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-spacer></v-spacer>
+                                        <!-- Botón de cancelar que se mostrará en la parte inferior derecha de la tarjeta, este al darle click cierra el cuadro de diálogo y resetea el formulario del empleado -->
+                                        <v-btn color="blue darken-1" text @click="dialog = false; reset();">Cancelar
+                                        </v-btn>
+                                        <!-- Botón de guardar que se mostrará en la parte inferior derecha de la tarjeta, este al darle click permite validar cada campo y registra la información registrada en el formulario -->
+                                        <v-btn color="blue darken-1" text @click="validate();">Guardar</v-btn>
+                                    </v-card-actions>
+                                </v-form>
+                            </v-card>
+                        </v-dialog>
+                    </v-main>
+
+
+                    <!-- aqui continua el navbar, este muestra una lista con las clases que tenemos actualmente -->
+                    <v-navigation-drawer v-model="drawer" absolute temporary>
+                        <v-list dense nav>
+
+
+
+                            <v-list-item link href='/empleados'>
+                                <!-- Nos redirecciona a la vista empleados -->
+                                <v-list-item-icon>
+                                    <v-icon>mdi-account-multiple</v-icon> <!-- Hacemos uso de un icon -->
+                                </v-list-item-icon>
+                                <v-list-item-content>
+                                    <v-list-item-title>Empleados</v-list-item-title>
+                                    <!-- Mandamos el nombre de la vista -->
+                                </v-list-item-content>
+                            </v-list-item>
+
+                            <v-list-item link href='/informe'>
+                                <!-- Nos redirecciona a la vista sedes -->
+                                <v-list-item-icon>
+                                    <v-icon>mdi-map</v-icon> <!-- Hacemos uso de un icon -->
+                                </v-list-item-icon>
+                                <v-list-item-content>
+                                    <v-list-item-title>Informe</v-list-item-title> <!-- Mandamos el nombre de la vista -->
+                                </v-list-item-content>
+                            </v-list-item>
+
+                            <v-list-item link href='/solicitud'>
+                                <!-- Nos redirecciona a la vista solicitud -->
+                                <v-list-item-icon>
+                                    <v-icon>mdi-folder</v-icon> <!-- Hacemos uso de un icon -->
+                                </v-list-item-icon>
+                                <v-list-item-content>
+                                    <v-list-item-title>Solicitudes</v-list-item-title>
+                                    <!-- Mandamos el nombre de la vista -->
+                                </v-list-item-content>
+                            </v-list-item>
+                        </v-list>
+                        </v-navegation-drawer>
+                </div>
+
+                <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"
+                    integrity="sha512-E8QSvWZ0eCLGk4km3hxSsNmGWbLtSCSUcewDQPQWZF6pEU8GlT8a5fF32wOl1i8ftdMhssTrF/OhyGWwonTcXA=="
+                    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+                <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.js"
+                    integrity="sha512-nqIFZC8560+CqHgXKez61MI0f9XSTKLkm0zFVm/99Wt0jSTZ7yeeYwbzyl0SGn/s8Mulbdw+ScCG41hmO2+FKw=="
+                    crossorigin="anonymous"></script>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.0.2/dist/sweetalert2.all.min.js"></script>
+                <!-- Hacemos uso de los cdn -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.js"
+        integrity="sha512-nqIFZC8560+CqHgXKez61MI0f9XSTKLkm0zFVm/99Wt0jSTZ7yeeYwbzyl0SGn/s8Mulbdw+ScCG41hmO2+FKw=="
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.0.2/dist/sweetalert2.all.min.js"></script>
+
+    <!-- 1. Link Vue Javascript -->
+    <script src='https://unpkg.com/vue/dist/vue.js'></script>
+
+    <!-- 2. Link VCalendar Javascript (Plugin automatically installed) -->
+    <script src='https://unpkg.com/v-calendar'></script>
+
+                <script>
+                    //Variable en la cual se almacenará la api de empleados
+                    let url = 'http://localhost:3000/api/empleados/filtro:';
+                    //Variable en la cual se almacenará la api de sedes
+                    let url2 = 'http://localhost:3000/api/sede/';
+                    //Variable en la cual se almacenará la api de areas
+                    let url3 = 'http://localhost:3000/api/area/';
+                    //variable en la cual se almacenará la api de cargos
+                    let url4 = 'http://localhost:3000/api/cargo/';
+
+                    //Creación del proyecto de Vue
+                    new Vue({
+                        el: '#app',
+                        //Creación de Vuetify
+                        vuetify: new Vuetify(),
+                        data() {
+                            return {
+                                //Array tipo Json de sedes
+                                sedes: [],
+                                //Array tipo Json de areas
+                                areas: [],
+                                //Array tipo Json de empleados
+                                empleados: [],
+                                //Array tipo Json de cargos
+                                cargos: [],
+                                search: '',
+
+                                //Inicialización del cuadro de diálogo en false, para que no se muestre
+                                dialog: false,
+                                //Variable que manejará las distintas operaciones como editar y crear
+                                operacion: '',
+                                drawer: false, //inicializamos esta funcion en false para que cuando se haga clic en el navbar este se pueda desplegar
+                                right: null,
+                                //Creación del empleado con sus atributos nulos o vacios
+                                empleado: {
+                                    id_empleado: null,
+                                    nom_empleado: '',
+                                    ape_empleado: '',
+                                    tel_empleado: '',
+                                    direc_empleado: '',
+                                    email_empleado: '',
+                                    cargo_empleado: null,
+                                    roll_empleado: '',
+                                    fecha_inicio_contrato: null,
+                                    sede_empleado: null,
+                                    area_empleado: null
+                                },
+                                //Creación de la sede con sus atributos nulos o vacios
+                                sede: {
+                                    id_sede: null,
+                                    nom_sede: ''
+                                },
+                                //Creación de la área con sus atributos nulos o vacios
+                                area: {
+                                    id_area: null,
+                                    nom_area: ''
+                                },
+                                cargos: {
+                                    idCargo: null,
+                                    nombreCargo: ''
+                                },
+                                valid: true,
+                                //Reglas para la validación de los campos del formulario
+                                idRules: [
+                                    v => !!v || 'La identifcación es requerida',
+                                    v => (v && v.length <= 10) || 'La identificación debe tener hasta 10 números'
+                                ],
+                                nameRules: [
+                                    v => !!v || 'El nombre es requerido',
+                                    v => (v && v.length <= 100) || 'El nombre debe tener menos de 100 caracteres'
+                                ],
+                                lastNameRules: [
+                                    v => !!v || 'El apellido es requerido',
+                                    v => (v && v.length <= 100) || 'El apellido debe tener menos de 100 caracteres'
+                                ],
+                                phonoRules: [
+                                    v => !!v || 'El teléfono es requerido',
+                                    v => (v && v.length <= 10) || 'El teléfono debe tener 10 números'
+                                ],
+                                sedesRules: [
+                                    v => !!v || 'La sede es requerida',
+                                    v => (v && v.length <= 100) || 'La dirección debe tener menos de 100 caracteres'
+                                ],
+                                emailRules: [
+                                    v => !!v || 'El correo es requerido',
+                                    v => /.+@.+\..+/.test(v) || 'El correo debe ser valido',
+                                    v => (v && v.length <= 100) || 'El correo debe tener menos de 100 caracteres'
+                                ],
+                                cargoRules: [
+                                    v => !!v || 'El cargo es requerido',
+                                    v => (v && v.length <= 100) || 'El cargo debe tener menos de 100 caracteres'
+                                ],
+                                rollRules: [
+                                    v => !!v || 'El roll es requerido'
+                                ],
+                                passwordRules: [
+                                    v => !!v || 'La contraseña es requerida'
+                                ],
+                                dateRules: [
+                                    v => !!v || 'La fecha es requerida'
+                                ],
+                                sedeRules: [
+                                    v => !!v || 'La sede es requerida'
+                                ],
+                                areaRules: [
+                                    v => !!v || 'El área es requerida'
+                                ],
+
+                                select: null,
+                            }
+                        },
+                        //Nos trae todos los datos de la API y nos las llena en cada variable
+                        created() {
+                            this.mostrar(),
+                                this.mostrarSede(),
+                                this.mostrarArea()
+                        },
+                        methods: {
+                            //Métodos para el Crud
+                            //Permite almacenar el array de empleados con los datos de empleados de la API
+                            mostrarCargos: function () {
+                                //Se hace uso de axios para realizar peticiones HTTP a la API 
+                                axios.get(url4)
+                                    .then(response => {
+                                        this.cargos = response.data;
+                                    });
+                            },
+
+
+
+                            //Permite almacenar el array de empleados con los datos de empleados de la API
+                            mostrar: function () {
+                                //Se hace uso de axios para realizar peticiones HTTP a la API 
+                                axios.get(url)
+                                    .then(response => {
+                                        this.empleados = response.data;
+                                    });
+                            },
+                            //Permite almacenar el array de sedes con los datos de sedes de la API
+                            mostrarSede: function () {
+                                //Se hace uso de axios para realizar peticiones HTTP a la API 
+                                axios.get(url2)
+                                    .then(response => {
+                                        this.sedes = response.data;
+                                    });
+                            },
+                            //Permite crear una nueva sede con los datos que vienen por parámetro y muestra todas las sedes
+                            crearSede: function () {
+                                let parametros = { nom_sede: this.sede.nom_sede };
+                                //Se hace uso de axios para realizar peticiones HTTP a la API 
+                                axios.post(url2, parametros)
+                                    .then(response => {
+                                        this.mostrarSede();
+                                    });
+                                this.sede.nom_sede = "";
+                            },
+                            //Permite almacenar el array de áreas con los datos de áreas de la API
+                            mostrarArea: function () {
+                                //Se hace uso de axios para realizar peticiones HTTP a la API 
+                                axios.get(url3)
+                                    .then(response => {
+                                        this.areas = response.data;
+                                    })
+                            },
+
+                    buscarEmpleado: function (id) {
+                    axios.get(url3 + '/' + id).then(response => {
+                        let datos = response.data;
+                        this.empleado.nom_cargo = datos[0].nom_cargo;
+                        this.empleado.nom_sede = datos[0].nom_sede;
+
+                        this.solicitud.peri_ini = new Date(datos[0].periodo_ini).toISOString('es-CO').split('T')[0];
+                        this.solicitud.peri_fin = new Date(datos[0].periodo_fin_1).toISOString('es-CO').split('T')[0];
+
+                        
+                    });
+                },
+                            //Permite crear una nueva área con los datos que vienen por parámetro y muestra todas las áreas
+                            crearArea: function () {
+                                let parametros = { nom_area: this.area.nom_area };
+                                //Se hace uso de axios para realizar peticiones HTTP a la API 
+                                axios.post(url3, parametros)
+                                    .then(response => {
+                                        this.mostrarArea();
+                                    });
+                                this.area.nom_area = "";
+                            },
+                            //Permite crear un nuevo empleado con los datos que vienen por parámetro y muestra todos los empleados
+                            crear: function () {
+                                let parametros = {
+                                    id_empleado: this.empleado.id_empleado,
+                                    nom_empleado: this.empleado.nom_empleado,
+                                    email: this.empleado.email,
+                                    nom_cargo: this.nom_cargo,
+                                    fechaContrato: this.empleado.fechacontrato.toDateString(),
+                                    sede_empleado: this.empleado.sede_empleado,
+                                    area_empleado: this.empleado.area_empleado,
+
+
+                                };
+                                //Se hace uso de axios para realizar peticiones HTTP a la API 
+                                axios.post(url, parametros)
+                                    .then(response => {
+                                        this.mostrar();
+                                    });
+                                //Al terminar de mostrar los empleados nos deja vacios los campos para su posterior inserción
+                                this.empleado.id_empleado = "";
+                                this.empleado.nom_empleado = "";
+                                this.empleado.email = "";
+                                this.nom_cargo = "";
+                                this.empleado.fechacontrato = "";
+                                this.empleado.sede_empleado = "";
+                                this.empleado.area_empleado = "";
+                                //Uso del componente SweetAlert, este basicamente nos muestra un mensaje en la parte superior derecha que se ha creado el empleado satisfactoriamente
+                                const Toast = Swal.mixin({
+                                    toast: true,
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3500,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                                })
+                                Toast.fire({
+                                    icon: 'success',
+                                    title: 'Empleado registrado satisfactoriamente'
+                                })
+                            },
+                            //método que permite editar la información del empleado con los datos que vienen por parámetro a través de la API
+                            editar: function () {
+                                let parametros = { nom_empleado: this.empleado.nom_empleado, id_empleado: this.empleado.id_empleado, email: this.empleado.email, nom_cargo: this.empleado.nom_cargo, fechaContrato: this.empleado.fechaContrato, sede_empleado: this.empleado.sede_empleado, area_empleado: this.empleado.area_empleado };
+                                //Se hace uso de axios para realizar peticiones HTTP a la API 
+                                axios.put(url + this.empleado.id_empleado, parametros)
+                                    .then(response => {
+                                        this.mostrar();
+                                    })
+                                    //Si hay un error no lo muestra en la consola
+                                    .catch(error => {
+                                        console.log(error);
+                                    });
+                                //Uso del componente SweetAlert, este basicamente nos muestra un mensaje en la parte superior derecha que se ha editado el empleado satisfactoriamente
+                                const Toast = Swal.mixin({
+                                    toast: true,
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3500,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                                })
+                                Toast.fire({
+                                    icon: 'success',
+                                    title: 'Empleado editado satisfactoriamente'
+                                })
+                            },
+                            //método que permite eliminar un empleado con el id de empleado que vienen por parámetro a través de la API
+                            eliminar: function (id_empleado) {
+                                //Uso del componente SweetAlert, este basicamente nos muestra un mensaje de confirmación en la parte central de que si se desea elimiar el registro
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: '¿Desea eliminar el registro?',
+                                    confirmButtonText: 'Confirmar',
+                                    showCancelButton: true,
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        //Se hace uso de axios para realizar peticiones HTTP a la API, en este caso eliminar un registro con la identificación del empleado
+                                        axios.delete(url + id_empleado)
+                                            .then(response => {
+                                                this.mostrar();
+                                            });
+                                        Swal.fire('¡Eliminado!', '', 'success')
+                                    } else if (result.isDenied) {
+                                    }
+                                });
+                            },
+                            //Nos maneja la operación a realizar según sea el caso de crear o editar 
+                            guardar: function () {
+                                if (this.operacion == 'crear') {
+                                    this.crear();
+                                }
+                                if (this.operacion == 'editar') {
+                                    this.editar();
+                                }
+                                this.dialog = false;
+                            },
+                            //Nos crea un formulario nuevo, nos abre el cuadro de diálogo y nos registra la operación de crear y al finalizar nos resetea el formulario
+                            formNuevo: function () {
+                                this.dialog = true;
+                                this.operacion = 'crear';
+                                this.reset();
+                            },
+                            //Nos asigna los datos que vienen por parámetro al empleado y nos abré el cuadro de diálogo con la información en cada campo de texto y cada combo.
+                            formEditar: function (id_empleado, nom_empleado, email, nom_cargo, fechaContrato, nom_sede, nom_area) {
+                                this.empleado.id_empleado = id_empleado;
+                                this.empleado.nom_empleado = nom_empleado;
+                                this.empleado.email = email;
+                                this.nom_cargo = nom_cargo;
+                                this.empleado.fechacontrato = new Date(fechaContrato).toDateString();
+                                this.empleado.sede_empleado = sede_empleado;
+                                this.empleado.area_empleado = area_empleado;
+                                this.dialog = true;
+                                this.operacion = 'editar';
+                            },
+                            //Nos valida el formulario, esto con el fin de que el usuario no nos mande información vacia o erronea
+                            validate() {
+                                if (this.$refs.form.validate()) {
+                                    this.guardar();
+                                }
+                            },
+                            //Resetea el formulario
+                            reset() {
+                                this.$refs.form.reset()
+                            },
+                            //Resetea la validación del formulario
+                            resetValidation() {
+                                this.$refs.form.resetValidation()
+                            }
+                        }
+                    });
+                </script>
+        </v-app>
+    </div>
+</body>
+
+</html>

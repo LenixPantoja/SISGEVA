@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="icon" type="image/png" href="/resources/1.png">
+    <title>SISGEVA - Clinizad</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <!-- Importación del plugin SweetAlert2, el cual nos ayudará con las alertas de la aplicación -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.0.2/dist/sweetalert2.min.css">
+</head>
+
+<body>
+    
+    <div id="app">
+        <v-app>
+            <v-sheet color="#606F8C" height="98px" max-width="100%"
+                style="background: linear-gradient(to bottom right, #2f4978, #3c4084);">
+                <v-card-text>
+                    <v-row justify="end" style="padding-right: 23px; padding-top: 21px; padding-left: 28px;">
+                        <!-- Ubicacion de las imagenes de la barra superior (logos) -->
+                        <div style="margin-left:5%;">
+                            <img src="/resources/Logoclinizad.png" style="margin-top: -4px; width: 40%; height: 80%; margin-right: 5%;" alt="">
+                            <img src="/resources/2.png" style="margin-top: 1%; width: 5%;">
+                            <img src="/resources/sisgeva3.png" style="margin-top: -4px; width: 15%;">
+                        </div>
+                        <v-spacer></v-spacer>
+                        <!-- Boton para cambiar constraseña  -->
+
+
+                        <v-btn  @click="showChangePasswordDialog" color="#FF0000" icon id="cambiarContraseña">
+                            <v-icon size="21"
+                                style=" box-shadow: 0 0 5px #2f4978; color:#606F8C; background-color: white; border-radius: 100%; padding: 8px; font-weight: bold;">
+                                mdi-key
+                            </v-icon>
+                        </v-btn>
+                        
+                        <v-dialog v-model="cambiarContrasenia" persistent>
+                            <v-card>
+                                <v-card-title>
+                                    <Span>Cambiar contraseña</Span>
+                                </v-card-title>
+                            </v-card>
+                        </v-dialog>
+                        
+                        <v-btn icon id="logout" href="logout">
+                            <v-icon size="21"
+                                style="box-shadow: 0 0 5px rgba(255, 255, 255, 0.615); color:#606F8C; background-color: white; border-radius: 100%; padding: 8px; font-weight: bold;">
+                                mdi-close</v-icon>
+                        </v-btn>
+                    </v-row>
+                </v-card-text>
+            </v-sheet>
+
+            <template>
+                <v-progress-linear color="#5c76a8" value="0" rounded
+                    style="height: 7px; margin-top: -2px; margin-bottom: -20px;"></v-progress-linear>
+            </template>
+
+            <v-main class="d-flex align-center">
+                <template>
+                    <v-row style="justify-content: center; margin: 2px;">
+                        <v-card id="card_t">
+                            <v-card class="mx-auto" max-width="800" outlined
+                                style="border-radius: 20px;  box-shadow: 0 0 5px rgba(3, 33, 97, 0.2);">
+                                <v-list-item three-line>
+                                    <v-list-item-content>
+                                        <v-list-item-title class="text-h5 mb-1">
+                                            <h4>Nombre: {{nombreEmpleado}}</h4>
+                                            <v-divider></v-divider>
+                                        </v-list-item-title>
+                                        <v-list-item-subtitle>
+                                            <h3>CC: {{idEmpleado}}</h3>
+                                        </v-list-item-subtitle>
+                                        <v-list-item-subtitle>
+                                            <h3>Cargo: {{cargoEmpleado}}</h3>
+                                        </v-list-item-subtitle>
+                                        <v-list-item-subtitle>
+                                            <h3>Area: {{areaEmpleado}}</h3>
+                                        </v-list-item-subtitle>
+                                        <v-list-item-subtitle>
+                                            <h3>Fecha de Contrato: {{fechaContrato}}</h3>
+                                        </v-list-item-subtitle>
+
+                                    </v-list-item-content>
+                                    <v-list-item-avatar size="60"
+                                        style="box-shadow: 0 0 5px rgba(3, 33, 97, 0.2); background: linear-gradient(to bottom right, #58f058, #1a8d03); padding: 20px; margin-top: 20px;">
+                                        <v-icon dark size="30">mdi-account</v-icon>
+                                    </v-list-item-avatar>
+                                </v-list-item>
+                            </v-card>
+                            <v-row>
+                                <br>
+                                <v-col>
+                                    <v-card class="mx-auto" max-width="400" outlined
+                                        style="border-radius: 20px; margin-top: 10px; box-shadow: 0 0 5px rgba(3, 33, 97, 0.2);">
+                                        <v-list-item three-line>
+                                            <v-list-item-content>
+                                                <v-list-item-title class="text-h5">
+                                                    <h4>Periodos Acumulados</h4>
+                                                    <v-divider></v-divider>
+                                                </v-list-item-title>
+                                                <v-list-item-subtitle>
+                                                    <h3>Fecha: {{periodo_ini}} / {{periodo_fin}}</h3>
+                                                </v-list-item-subtitle>
+                                                <h5 style="margin-top: 2px;">Días: {{dias}}</h5>
+                                            </v-list-item-content>
+                                            <v-list-item-avatar size="60"
+                                                style=" box-shadow: 0 0 5px rgba(3, 33, 97, 0.2);background: linear-gradient(to bottom right, #255ffd, #6279a8); padding: 20px; margin-top: 20px;">
+                                                <v-icon dark size="30">mdi-sunglasses</v-icon>
+                                            </v-list-item-avatar>
+                                        </v-list-item>
+                                    </v-card>
+                                </v-col>
+
+                                <v-col>
+                                    <v-card class="mx-auto" max-width="400" outlined
+                                        style="border-radius: 20px; margin-right: -7px; margin-top: 10px; box-shadow: 0 0 5px rgba(3, 33, 97, 0.2);">
+                                        <v-list-item three-line>
+                                            <v-list-item-content>
+                                                <v-list-item-title class="text-h5">
+                                                    <h4> Periodo más antigüo</h4>
+                                                    <v-divider></v-divider>
+                                                </v-list-item-title>
+                                                <v-list-item-subtitle>
+                                                    <h3>Fecha: {{periodo_ini}} / {{periodo_fin1}}</h3>
+                                                </v-list-item-subtitle>
+                                                <h5 style="margin-top: 2px;">Días: {{dias_1}}</h5>
+                                            </v-list-item-content>
+                                            <v-list-item-avatar size="60"
+                                                style=" box-shadow: 0 0 5px rgba(3, 33, 97, 0.2); background: linear-gradient(to bottom right, #ff8e3c, #fecb3d); padding: 20px; margin-top: 20px;">
+                                                <v-icon dark size="30">mdi-white-balance-sunny</v-icon>
+                                            </v-list-item-avatar>
+                                        </v-list-item>
+                                    </v-card>
+                                </v-col>
+                            </v-row>
+                        </v-card>
+
+
+                        <v-card-text id="card_l">
+                            <template>
+                                <div class="text-center">
+                                    <v-dialog v-model="dialog" max-width="430" persistent>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-col class="col-12">
+                                                <v-row>
+                                                    <v-spacer></v-spacer>
+                                                    <v-btn color="red lighten-2" dark v-bind="attrs" v-on="on"
+                                                        style="margin-bottom: 15px; margin-right: 30px;">
+                                                        Agregar
+                                                    </v-btn>
+                                                    <br>
+                                                </v-row>
+                                            </v-col>
+                                        </template>
+
+                                        <v-toolbar color="#606F8C" fixed dark style="text-align: center;">
+                                            <h3 style="margin-left: 20px;">Agregar Solicitud</h3>
+                                            <v-spacer></v-spacer>
+                                            <v-btn class="ma-2" text class="close" icon color="white lighten-2"
+                                                @click="resetInfoC();">
+                                                <v-icon>mdi-close-thick</v-icon>
+                                            </v-btn>
+                                        </v-toolbar>
+
+                                        <v-card-text style="background-color: whitesmoke;">
+                                            <v-form ref="create" v-model="valid" lazy-validation>
+                                                <v-card-text>
+                                                    <v-col class="col-12" style="margin-top: -8px;">
+                                                        <v-row>
+                                                            <p
+                                                                style="margin-left: 15px; font-size: 16px; color: #3f3f41;">
+                                                                <strong>Tipo de vacaciones y
+                                                                    días a disfrutar:</strong>
+                                                            </p>
+                                                        </v-row>
+                                                        <v-row style="margin-top: -16px;">
+                                                            <v-col class="col-7">
+                                                                <v-select :items="tipo_vac" v-model="solicitud.tipo"
+                                                                    class="input-b"
+                                                                    :rules="[v => !!v || 'Ingrese el tipo de vacaciones.']"
+                                                                    required label="Tipo de vacaciones" solo outlined>
+                                                                </v-select>
+                                                            </v-col>
+                                                            <v-col class="col-5">
+                                                                <v-text-field solo outlined type="number" min="1"
+                                                                    max="15" class="input-b"
+                                                                    :rules="[rules.required, rules.cant, rules.remu]"
+                                                                    v-if="solicitud.tipo!='Disfrutados'"
+                                                                    :disabled="!solicitud.tipo" label="Días"
+                                                                    v-model="solicitud.dias">
+                                                                </v-text-field>
+                                                                <v-text-field solo outlined type="number" min="1"
+                                                                    max="15" class="input-b"
+                                                                    :rules="[rules.required, rules.cant, rules.noRemu]"
+                                                                    v-if="solicitud.tipo=='Disfrutados'"
+                                                                    :disabled="!solicitud.tipo" label="Días"
+                                                                    v-model="solicitud.dias">
+                                                                </v-text-field>
+                                                            </v-col>
+                                                        </v-row>
+                                                    </v-col>
+                                                    <v-col class="col-12">
+                                                        <br>
+                                                        <v-row>
+                                                            <p
+                                                                style="margin-left: 15px; font-size: 16px; color: #3f3f41;">
+                                                                <strong>Fecha vacacional:</strong>
+                                                            </p>
+                                                        </v-row>
+                                                        <v-row style="margin-top: -16px;">
+                                                            <v-spacer></v-spacer>
+                                                            <v-col class="col-5">
+                                                                <v-date-picker v-model="fv_1" locale="es-CO"
+                                                                    :model-config="modelConfig" :min-date='new Date()'
+                                                                    :attributes="attributes" color="blue">
+                                                                    <template v-slot="{ inputValue, inputEvents }">
+                                                                        <v-text-field solo outlined ref="rango_fecha"
+                                                                            width="170"
+                                                                            :rules="[v => !!v || 'Ingrese la fecha de inicio.']"
+                                                                            required class="input-b" readonly
+                                                                            :disabled="!solicitud.dias"
+                                                                            v-on="inputEvents" label="Inicio"
+                                                                            v-model="fv_1">
+                                                                        </v-text-field>
+                                                                    </template>
+                                                                </v-date-picker>
+                                                            </v-col>
+                                                            <v-icon size="21"
+                                                                style="color:#606F8C; background-color:whitesmoke; border-radius: 100%; padding: 10px; font-weight: bold;">
+                                                                mdi-arrow-right-thick</v-icon>
+                                                            <v-col class="col-5">
+                                                                <v-date-picker v-model="fv_2" locale="es-CO"
+                                                                    :model-config="modelConfig" :min-date='new Date()'
+                                                                    :attributes="attributes" color="blue">
+                                                                    <template v-slot="{ inputValue, inputEvents }">
+                                                                        <v-text-field solo outlined ref="rango_fecha"
+                                                                            :rules="[v => !!v || 'Ingrese la fecha de finalizacion.']"
+                                                                            required class="input-b" readonly
+                                                                            width="170" :disabled="!solicitud.dias"
+                                                                            v-on="inputEvents" label="Fin"
+                                                                            v-model="fv_2">
+                                                                        </v-text-field>
+                                                                    </template>
+                                                                </v-date-picker>
+                                                            </v-col>
+                                                            <v-spacer></v-spacer>
+                                                        </v-row>
+                                                    </v-col>
+                                                </v-card-text>
+                                                <v-card-actions style="margin-top: 10px;">
+                                                    <v-divider></v-divider>
+                                                    <v-btn color="#606F8C" dark @click="validar()">
+                                                        Agregar
+                                                    </v-btn>
+                                                </v-card-actions>
+                                            </v-form>
+                                        </v-card-text>
+                                    </v-dialog>
+                                </div>
+                            </template>
+
+
+                            <v-card id="card_t" style="top: 0;">
+                                <v-card-content>
+                                    <v-card-title>
+
+
+
+
+                                    
+                                    <v-btn-toggle shaped mandatory v-model="toggle_exclusive"
+                                        style=" box-shadow: 0 0 5px rgba(3, 33, 97, 0.2);">
+
+                                        
+                                                                                        
+                                        <v-btn color="#04105C" text @click="estadoSolicitud();">
+                                                    <p>Mis Solicitudes</p>
+                                            </v-btn>
+                                    </v-btn-toggle>
+                                    
+
+                                        <div id="rangosVacacionales">
+                                        
+
+
+                                        <v-col cols="auto " >
+                                            <h2>Rangos Vacaciones</h2>
+                                            
+                                            
+                                            </v-col>
+                                            <v-btn-toggle shaped mandatory v-model="toggle_exclusive"
+                                                style=" box-shadow: 0 0 5px rgba(3, 33, 97, 0.2);">
+
+                                                
+                                                                                                
+                                                
+                                                    
+                                                
+                                                <v-btn color="#0720BE" text
+                                                    @click="fechaInicioRango='2023-01-11';fechaFinRango='2023-01-27';rangosFechas='uno'; llamardatosrango();">
+                                                    <p>1</p>
+                                                </v-btn>
+                                                <v-btn color="#0720BE" text
+                                                    @click="fechaInicioRango='2023-01-28';fechaFinRango='2023-02-14';rangosFechas='dos'; llamardatosrango();">
+                                                    <p>2</p>
+                                                </v-btn>
+                                                <v-btn color="#0720BE" text
+                                                    @click="fechaInicioRango='2023-02-15';fechaFinRango='2023-03-03';rangosFechas='tres';llamardatosrango();">
+                                                    <p>3</p>
+                                                </v-btn>
+                                                <v-btn color="#0720BE" text
+                                                    @click="fechaInicioRango='2023-03-04';fechaFinRango='2023-03-22';rangosFechas='cuatro';llamardatosrango();">
+                                                    <p>4</p>
+                                                </v-btn>
+                                                <v-btn color="#0720BE" text
+                                                    @click="fechaInicioRango='2023-03-23';fechaFinRango='2023-04-11';rangosFechas='cinco';llamardatosrango();">
+                                                    <p>5</p>
+                                                </v-btn>
+                                                <v-btn color="#0720BE" text
+                                                    @click="fechaInicioRango='2023-04-12';fechaFinRango='2023-04-28';rangosFechas='seis';llamardatosrango();">
+                                                    <p>6</p>
+                                                </v-btn>
+                                                <v-btn color="#0720BE" text
+                                                    @click="fechaInicioRango='2023-04-29';fechaFinRango='2023-05-17';rangosFechas='siete';llamardatosrango();">
+                                                    <p>7</p>
+                                                </v-btn>
+                                                <v-btn color="#0720BE" text
+                                                    @click="fechaInicioRango='2023-05-18';fechaFinRango='2023-06-05';rangosFechas='ocho';llamardatosrango();">
+                                                    <p>8</p>
+                                                </v-btn>
+                                                <v-btn color="#0720BE" text
+                                                    @click="fechaInicioRango='2023-06-06';fechaFinRango='2023-06-24';rangosFechas='nueve';llamardatosrango();">
+                                                    <p>9</p>
+                                                </v-btn>
+                                                <v-btn color="#0720BE" text
+                                                    @click="fechaInicioRango='2023-06-26';fechaFinRango='2023-07-13';rangosFechas='diez';llamardatosrango();">
+                                                    <p>10</p>
+                                                </v-btn>
+                                                <v-btn color="#0720BE" text
+                                                    @click="fechaInicioRango='2023-07-14';fechaFinRango='2023-08-01';rangosFechas='once';llamardatosrango();">
+                                                    <p>11</p>
+                                                </v-btn>
+                                                <v-btn color="#0720BE" text
+                                                    @click="fechaInicioRango='2023-08-02';fechaFinRango='2023-08-19';rangosFechas='doce';llamardatosrango();">
+                                                    <p>12</p>
+                                                </v-btn>
+                                                <v-btn color="#0720BE" text
+                                                    @click="fechaInicioRango='2023-08-22';fechaFinRango='2023-09-07';rangosFechas='trece';llamardatosrango();">
+                                                    <p>13</p>
+                                                </v-btn>
+                                                <v-btn color="#0720BE" text
+                                                    @click="fechaInicioRango='2023-09-08';fechaFinRango='2023-09-25';rangosFechas='catorce';llamardatosrango();">
+                                                    <p>14</p>
+                                                </v-btn>
+                                                <v-btn color="#0720BE" text
+                                                    @click="fechaInicioRango='2023-09-26';fechaFinRango='2023-10-12';rangosFechas='quince';llamardatosrango();">
+                                                    <p>15</p>
+                                                </v-btn>
+                                                <v-btn color="#0720BE" text
+                                                    @click="fechaInicioRango='2023-10-13';fechaFinRango='2023-10-31';rangosFechas='dieciseis';llamardatosrango();">
+                                                    <p>16</p>
+                                                </v-btn>
+                                                <v-btn color="#0720BE" text
+                                                    @click="fechaInicioRango='2023-11-01';fechaFinRango='2023-11-20';rangosFechas='diecisiete';llamardatosrango();">
+                                                    <p>17</p>
+                                                </v-btn>
+                                                <v-btn color="#0720BE" text
+                                                    @click="fechaInicioRango='2023-11-21';fechaFinRango='2023-12-07';rangosFechas='dieciocho';llamardatosrango();">
+                                                    <p>18</p>
+                                                </v-btn>
+                                                <v-btn color="#0720BE" text
+                                                    @click="fechaInicioRango='2023-12-09';fechaFinRango='2023-12-27';rangosFechas='diecinueve';llamardatosrango();">
+                                                    <p>19</p>
+                                                </v-btn>
+                                                <v-btn color="#0720BE" text
+                                                    @click="fechaInicioRango='2023-12-28';fechaFinRango='2024-01-17';rangosFechas='viente';llamardatosrango();;">
+                                                    <p>20</p>
+                                                </v-btn>
+                                            </v-btn-toggle>
+
+                                        </v-col>
+                                        </div>
+
+
+                                </v-card-content>
+                                
+                                <h3 class="px-1">{{rangoPeriodoEmpleado}}</h3>                                
+
+                                <v-card-content style="width: max-content">
+                                    
+                                    <v-data-table :headers="headers" :items="desserts" :search="search">
+
+
+                                        <template v-slot:no-data>
+                                            <h3>No existen datos</h3>
+                                        </template>
+                                        <template v-slot:item.cant_vac_dias="{item }">
+                                            <strong> {{ item.cant_vac_dias }}</strong>
+                                        </template>
+                                        <template v-slot:no-results>
+                                            <h3> Lo sentimos, no hay resultado para '{{ search }}'.</h3>
+                                        </template>
+                                    </v-data-table>
+                                </v-card-content>
+                            </v-card>
+
+
+
+                            <v-row class="md-5">
+                                <v-col class="col-12">
+                                    <v-card-content style="width: max-content;">
+                                        <v-calendar :columns="$screens({ default: 1, lg: 5 })" :attributes="attributes"
+                                            locale="es-CO" :min-date='new Date(2022,0,01)' id="calendar"
+                                            :rows="$screens({ default: 1, lg: 2 })"
+                                            :is-expanded="$screens({ default: true, lg: false })"
+                                            @dayclick="onDayClick" />
+                                    </v-card-content>
+                                </v-col>
+                            </v-row>
+                        </v-card-text>
+
+                    </v-row>
+
+
+                </template>
+            </v-main>
+        </v-app>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.js"
+        integrity="sha512-nqIFZC8560+CqHgXKez61MI0f9XSTKLkm0zFVm/99Wt0jSTZ7yeeYwbzyl0SGn/s8Mulbdw+ScCG41hmO2+FKw=="
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.0.2/dist/sweetalert2.all.min.js"></script>
+
+    <!-- 1. Link Vue Javascript -->
+    <script src='https://unpkg.com/vue/dist/vue.js'></script>
+
+    <!-- 2. Link VCalendar Javascript (Plugin automatically installed) -->
+    <script src='https://unpkg.com/v-calendar'></script>
+    <script>
+
+        let url = 'http://localhost:3000/api/feriados/';
+        let url2 = 'http://localhost:3000/api/solicitudes_aprobadas/';
+        let url3 = 'http://localhost:3000/api/solicitud/';
+        let url4 = 'http://localhost:3000/api/datos/';
+        let url5 = 'http://localhost:3000/api/efecha/';
+        let url6 = 'http://localhost:3000/api/efecha1/';
+        let url7 = 'http://localhost:3000/api/consulta_rango/';
+        
+
+        new Vue({
+            el: '#app',
+            vuetify: new Vuetify(),
+            data() {
+                // Constante que modela el listado de los días feriados (necesaria)
+                const feriados_f = [
+                    {
+                        description: 'prueba',
+                        isComplete: false,
+                        dates: [{ months: 3, days: 6 }],
+                        color: 'red'
+                    },
+                ];
+                dates = [{ start: null, end: null }];
+                return {
+                    //Datos usuario en sesión
+                    nombreEmpleado: null,
+                    cargoEmpleado: null,
+                    areaEmpleado: null,
+                    idEmpleado: null,
+                    id_s: null,
+                    fechaContrato: null,
+                    periodo_ini: null,
+                    periodo_fin: null,
+                    dias: null,
+                    periodo_fin1: null,
+                    dias_1: null,
+                    cargo_s: null,
+                    sede_s: null,
+                    listadoRango: '',
+                    fechaInicioRango: null,
+                    fechaFinRango: null,
+                    rangosFechas: '',
+                    rangoPeriodoEmpleado: null,
+
+                    // Festivos
+                    incId: feriados_f.length,
+                    feriados_f,
+                    // Solicitud
+                    solicitud: {
+                        tipo: null,
+                        dias: null,
+                        estado: 1
+                    },
+                    // Fecha Vacacional
+                    fv_1: null,
+                    fv_2: null,
+                    // Solicitudes aprobadas
+                    fecha_actual: new Date().toISOString('es-CO').split('T')[0],
+                    days: [],
+                    dates,
+                    //Formato de fechas
+                    modelConfig: {
+                        type: 'string',
+                        mask: 'YYYY-MM-DD'
+                    },
+                    // Icono para el boton de pantalla completa
+                    icono_full_ex: 'mdi-fullscreen',
+                    // Dialogo
+                    dialog: false,
+
+                    headers: [{}],
+                    headers0: [ // Solicitudes del empleado
+                        { text: 'Nombre', value: 'nombre' },
+                        { text: 'Fecha Enviada', value: 'fechaSolicitudEmpleado' },
+                        { text: 'Periodo Vacacional', value: 'periodoVacacionalEmpleado' },
+                        { text: 'Tipo Solicitud', value: 'tipoSolicitudEmpleado' },
+                        { text: 'Estado Solicitud', value: 'estadoSolicitudEmpleado' }],
+
+                    headers1: [
+                        
+                        { text: 'Fecha Solicitud', value: 'rangoSolicitudEmpleado' },
+                        { text: 'Cargo', value: 'rangoCargoEmpleado' }],
+
+                    desserts:[
+                        {
+                                                      
+                            nombre: null,
+                            fechaSolicitudEmpleado: null,
+                            cargoEmpleado: null,
+                            tipoSolicitudEmpleado: null,
+                            estadoSolicitudEmpleado: null,
+                            periodoVacacionalEmpleado: null,
+                            diasPendientesEmpleado: null,
+                            diasDisfrutadosEmpleado: null,
+                            rangoCargoEmpleado: null,
+                            rangoSolicitudEmpleado: null
+
+
+                        }
+                    ],
+
+
+
+
+                    // Tipo solicitud
+                    tipo_vac: ['Remunerada', 'Disfrutados'],
+                    // validacion de la cantidad de días de vacaciones
+                    rules: {
+                        required: value => !!value || 'Ingrese la cantidad de días',
+                        cant: value => this.solicitud.dias != 0 || 'Ingrese la cantidad de días',
+                        remu: value => this.solicitud.dias <= 8 || 'La cantidad puede ser de 7 u 8 días',
+                        noRemu: value => this.solicitud.dias <= 15 || 'La cantidad maxima es de 15 días',
+                    },
+                }
+            },
+            // Atributos del picker
+            computed: {
+                dates() {
+                    return this.days.map(day => day.date);
+                },
+                attributes() {
+                    return [
+                        // Attributes for feriados_f (feriados fijos)
+                        ...this.feriados_f.map(feri => ({
+                            dates: feri.dates,
+                            dot: {
+                                color: feri.color,
+                                class: feri.isComplete ? 'opacity-75' : '',
+                            },
+                            popover: {
+                                label: feri.description,
+                            },
+                            customData: feri,
+                        })),
+                        // Attributes for date (solicitudes aprobadas - suspendidas)
+                        ...this.dates.map(date => ({
+                            highlight: true,
+                            dates: date
+                        })),
+                    ];
+                },
+            },
+            //Nos trae todos los datos de la API y nos las llena en cada variable
+            created() {
+                this.datosUsuario();
+                this.feriados();
+                this.mostrarRangosVacacionales();
+                if (this.solicitud.dias == 0 || this.solicitud.dias > 15) {
+                    this.solicitud = null;
+                }
+                else if (this.solicitud.tipo == 'Remunerada' && this.solicitud.dias > 8) {
+                    this.solicitud = null;
+                }
+            },
+            methods: {
+                datosUsuario: function () {
+
+                    axios.get(url4)
+                        .then(response => {
+                            let datos = response.data;
+                            this.id_s = datos[0].id_empleado;
+                            this.idEmpleado = datos[0].id_empleado;
+                            this.nombreEmpleado = datos[0].empleado;
+                            this.fechaContrato=new Date(datos[0].fechaContrato).toISOString('es-CO').split('T')[0];
+                            this.cargoEmpleado = datos[0].nom_cargo;
+                            this.areaEmpleado = datos[0].nom_area;
+                            this.periodo_ini = new Date(datos[0].periodo_ini).toISOString('es-CO').split('T')[0];
+                            this.periodo_fin = new Date(datos[0].periodo_fin).toISOString('es-CO').split('T')[0];
+                            this.dias = datos[0].dias_dis;
+                            this.periodo_fin1 = new Date(datos[0].periodo_fin_1).toISOString('es-CO').split('T')[0];
+                            this.dias_1 = datos[0].dias_dis_periodo_1;
+                            this.cargo_s = datos[0].nom_cargo;
+                            this.sede_s = datos[0].nom_sede;
+                            this.solicitudesAprobadas();
+                            this.estadoSolicitud();
+                            this.rangoPeriodoEmpleado=null;
+                            this.mostrarRangosVacacionales();
+
+                        });
+                },
+                mostrarRangosVacacionales: function(){
+                    if(this.areaEmpleado=='Operativa'){
+                        document.getElementById("rangosVacacionales").style.opacity="1";
+                    }
+                    else{
+                        document.getElementById("rangosVacacionales").style.opacity="0";
+                    }
+                },
+                estadoSolicitud: function () {
+                    this.desserts.splice(0);
+                    this.headers = this.headers0;
+                    let id_empleado=this.idEmpleado;                    
+                    axios.get(url3+id_empleado)
+                        .then(response => {
+
+                                let datos =response.data;
+                                for( var i in datos){
+                                    this.desserts.push({
+                                    tipoSolicitudEmpleado: datos[i].tipo_solicitud,
+                                estadoSolicitudEmpleado: datos[i].estado_solicitud,
+                                periodoVacacionalEmpleado: new Date(datos[i].fecha_vac_start).toISOString('es-CO').split('T')[0] + ' - ' + new Date(datos[i].fecha_vac_end).toISOString('es-CO').split('T')[0],
+                                diasPendientesEmpleado: datos[i].dias_vac,
+                                diasDisfrutadosEmpleado: datos[i].dias_dis,
+                                fechaSolicitudEmpleado: new Date(datos[i].fecha_solicitud).toISOString('es-CO').split('T')[0],
+                                nombre: datos[i].empleado
+                                    })
+                                }                       
+                                
+
+
+                                
+                            
+                        })
+
+                   this.rangoPeriodoEmpleado=null;
+                },
+
+
+                // establece los datos de los rangos en headers
+                llamardatosrango: function () {
+                    this.desserts.splice(0);
+                    this.headers= this.headers1;
+                    let rangosFechaVacacionales =this.rangosFechas;
+                    axios.get(url7+rangosFechaVacacionales).then(response => {
+
+                            let datos = response.data;
+                            for (var i in datos) {
+                                this.desserts.push({
+                                    rangoSolicitudEmpleado: new Date(datos[i].fecha_solicitud).toISOString('es-CO').split('T')[0],
+                                    rangoCargoEmpleado: datos[i].nom_cargo,
+
+
+                                })
+
+                            }
+                        })
+                        this.rangoPeriodoEmpleado=this.fechaInicioRango+' / '+ this.fechaFinRango;
+
+                },
+
+             feriados: function () {
+                    axios.get(url)
+                        .then(response => {
+                            let datos = response.data;
+                            this.feriados_f.splice(0);
+                            for (var i in datos) {
+                                const mes = parseInt((datos[i].fecha_mes_dia).substring(0, 2));
+                                const dia = parseInt((datos[i].fecha_mes_dia).substring(3, 5));
+                                this.feriados_f.push({
+                                    description: datos[i].descripcion,
+                                    isComplete: false,
+                                    dates: [{ months: mes, days: dia }],
+                                    color: 'red',
+                                });
+                            }
+                        });
+                },
+
+
+                solicitudesAprobadas: function () {
+
+                    
+                    axios.get(url2 + this.id_s)
+                        .then(response => {
+                            let datos = response.data;
+                            this.dates.splice(0);
+                            this.dates.push({
+                                start: new Date(),
+                                end: new Date()
+                            });
+                            for (var i in datos) {
+                                const ini = new Date(datos[i].fecha_vac_start);
+                                const fin = new Date(datos[i].fecha_vac_end);
+                                this.dates.push({
+                                    start: ini,
+                                    end: fin
+                                });
+                            }
+                        });
+                },
+                validar: function () {
+                    if (this.$refs.create.validate()) {
+                        if (this.dias == null) {
+                            alert('Lo sentimos, no tiene días disponibles para crear el periodo.');
+                            this.resetInfoC();
+                        }
+                        else {
+                            if (this.solicitud.dias > this.dias_1) {
+                                alert('Los días ingresador sobrepasan los del ultimo periodo');
+                                this.solicitud.dias = this.dias_1;
+                                this.fv_1 = null;
+                                this.fv_2 = null;
+                            }
+                            else {
+                                this.validarRango();
+                            }
+                        }
+                    }
+                },
+                validarRango() {
+                    let cargo = this.cargo_s;
+                    let sede = this.sede_s;
+                    let f1 = this.fv_1;
+                    let f2 = this.fv_2;
+                    let f3 = this.fv_1;
+                    let f4 = this.fv_2;
+                    axios.get(url5 + cargo + '/' + sede + '/' + f1 + '/' + f2 + '/' + f3 + '/' + f4)
+                        .then(response => {
+                            let datos = response.data;
+                            if (datos == '') { this.createItem(); }
+                            else {
+                                alert('el rango no está disponible, por favor ingrese otro para continuar con su solicitud.');
+                                this.fv_1 = null;
+                                this.fv_2 = null;
+                            }
+                        });
+                },
+                createItem() {
+                    parametros = {
+                        id_empleado: this.id_s, tipo_solicitud: this.solicitud.tipo, fecha_vac_start: this.fv_1,
+                        fecha_vac_end: this.fv_2, dias_solicitados: this.solicitud.dias,
+                        periodo_ini: this.periodo_ini, periodo_fin: this.periodo_fin1,
+                        estado_solicitud: this.solicitud.estado
+                    };
+                    //Se hace uso de axios para realizar peticiones HTTP a la API
+                    axios.post(url3, parametros)
+                        .then(response => {
+                            this.resetInfoC();
+                        });
+                },
+                // Funcion para la pantalla completa
+                toggleFullScreen: function () {
+                    if (!document.fullscreenElement) {
+                        document.documentElement.requestFullscreen();
+                        this.icono_full_ex = 'mdi-fullscreen-exit';
+
+                    } else {
+                        if (document.exitFullscreen) {
+                            document.exitFullscreen();
+                            this.icono_full_ex = 'mdi-fullscreen';
+                        }
+                    }
+                },
+                onDayClick(day) {
+                    //Busca si el dia seleccionado ya se encuentra en el contenedor.
+                    const idx = this.days.findIndex(d => d.id === day.id);
+                    //Convierte el dia selecccionado en una fecha.
+                    const dia_selec = new Date(day.id);
+                    //Añade el formato YYYY-MM-DD a la fecha del dia seleccionado.
+                    const fecha_dia = new Date(dia_selec.setDate(dia_selec.getDate())).toISOString('es-CO').split('T')[0];
+                    //Almacena la fecha actual.
+                    const actual = new Date();
+                    //Le resta un dia a la fecha actual para que al mostrar o comparar la misma sea exacta.j
+                    const fecha_actual = new Date(actual.setDate(actual.getDate())).toISOString('es-CO').split('T')[0];
+
+                    //Establece que la fecha es mayor a la fecha actual
+                    if (fecha_dia >= fecha_actual) {
+                        //Extrae los datos del rango de fechas opcional 1
+                        const dia_f = parseInt(fecha_dia.split("-")[2]);
+                        const mes_f = parseInt(fecha_dia.split("-")[1]);
+                        const inicio = new Date(dia_selec.getFullYear(), mes_f - 1, dia_f);
+                        //Establece que el rango a agregar no hace parte de los rangos previamente almacenados.
+                        if (this.days[0] == null) {
+                            this.days.push({
+                                id: day.id,
+                                date: fecha_dia,
+                            });
+                            this.dates[0].start = inicio;
+                            this.dates[0].end = inicio;
+                        }
+                        else {
+                            // primer valor del day
+                            const p0 = new Date(this.days[0].date).toISOString('es-CO').split('T')[0];
+                            this.days[0] = ({
+                                id: day.id,
+                                date: fecha_dia,
+                            });
+                            if (p0 == this.days[0].date) {
+                                let cargo = this.cargo_s;
+                                let sede = this.sede_s;
+                                let f1 = p0;
+                                axios.get(url6 + cargo + '/' + sede + '/' + f1 + '/' + f1)
+                                    .then(response => {
+                                        let datos = response.data;
+                                        if (datos == '') { this.dialog = true; this.fv_1 = p0; }
+                                        else {
+                                            alert('Lo sentimos, el ' + p0 + ' no está disponible, por favor seleccione otro día.');
+                                        }
+                                    });
+                            }
+                            this.dates[0].start = inicio;
+                            this.dates[0].end = inicio;
+                        }
+                    }
+                },
+                resetInfoC: function () {
+                    // Borra toda la informaciòn del dialogo create.
+                    this.$refs.create.reset();
+                    this.dialog = false;
+                },
+            }
+        })
+    </script>
+
+    <style>
+        /* Works on Firefox */
+        *::-webkit-scrollbar {
+            width: 1px;
+        }
+
+        *::-webkit-scrollbar:hover {
+            width: 7px;
+        }
+
+        /* Estilos barra (thumb) de scroll */
+        *::-webkit-scrollbar-thumb {
+            background: #606F8C;
+            height: 4px;
+            border-radius: 4px;
+        }
+
+        /* Estilos track de scroll */
+        *::-webkit-scrollbar-track {
+            border-radius: 4px;
+            background: #606F8C;
+        }
+
+        *::-webkit-scrollbar-track:hover,
+        *::-webkit-scrollbar-track:active {
+            background: #d3e0fa42;
+        }
+
+        body,
+        #app {
+            background-color: rgba(151, 162, 196, 0.146);
+        }
+        #boton{display:none;}
+        #card_t {
+            box-shadow: 0 0 9px rgba(33, 33, 33, 0);
+            border-radius: 20px;
+            width: max-content;
+            padding-bottom: 20px;
+            margin-left: 3px;
+            margin-right: 3px;
+            margin-top: 3%;
+            background-color: rgba(255, 255, 255, 0);
+            display: inline-block;
+            text-align: center;
+        }
+
+        .input-b {
+            background: rgb(255, 255, 255);
+            height: 55px;
+        }
+
+        #card_l {
+            margin-bottom: 3%;
+            box-shadow: 0 0 9px rgba(33, 33, 33, .2);
+            background-color: rgb(255, 255, 255);
+            border-radius: 20px;
+            width: max-content;
+            margin-left: 3px;
+            margin-right: 3px;
+            margin-top: 1%;
+            min-width: 99%;
+            text-align: center;
+        }
+    </style>
+</body>
+
+</html>

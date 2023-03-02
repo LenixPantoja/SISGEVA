@@ -1,0 +1,1934 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <link rel="icon" type="image/png" href="/resources/1.png">
+    <title>SISGEVA - Clinizad</title>
+    <!-- Importación de CDNS -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <!-- Importación de iconos para el material design -->
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <!-- Importación de Vuetify, el cual maneja el material design estilo aplicación android -->
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <!-- Importación del plugin SweetAlert2, el cual nos ayudará con las alertas de la aplicación -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.0.2/dist/sweetalert2.min.css">
+    <link rel=" stylesheet" href="../node_modules/css/navegador.css">
+    <link rel="stylesheet"  href="../css/style.css" />
+</head>
+
+<body>
+
+
+
+
+
+    <!--Declaramos un div, este va abarcar todo los componenetes de vuetify, ademas en este se declaro un ID para luego llamarlo en vuetify -->
+    <div id="solicitud">
+        <v-app id="inspire" style="background: rgba(151, 162, 196, 0.146);">
+            <div>
+                <!-- Nav -->
+                <v-app-bar-nav-icon @click='drawer= !drawer'></v-app-bar-nav-icon>
+                    <div style="position: absolute; top: 0; right: 0;">
+                    <!-- <v-btn  icon id="fullScreen" @click="toggleFullScreen()">
+                        <v-icon size="21"
+                            style="box-shadow: 0 0 5px #2f4978; color:#606F8C; background-color: white; border-radius: 100%; padding: 10px; font-weight: bold;">
+                            {{icono_full_ex}}</v-icon>
+                    </v-btn> -->
+
+                    <!-- boton para cerrar sesion -->
+                    <v-btn  color="#FF0000" icon id="logout" href="logout">
+                        <v-icon size="21"
+                            style=" box-shadow: 0 0 5px #2f4978; color:#606F8C; background-color: white; border-radius: 100%; padding: 8px; font-weight: bold;">
+                            mdi-close</v-icon>
+                    </v-btn>
+                
+            </div>
+                    
+                    
+     
+                    
+                    
+                    <v-sheet color="#606F8C" height="125px" max-width="100%"
+                        style="background: linear-gradient(to bottom right, #2f4978, #3c4084);">
+                        
+                        <v-card-text>
+                            
+                            <v-row justify="end" style="padding-right: 23px; padding-top: 21px; padding-left: 28px;">
+                                <div style="margin-right: 70%;">
+                                    <img src="/resources/Logoclinizad.png" style="margin-top: -25px; width: 55%;" alt="">
+                                </div>
+
+                                <div style="margin-left: 85%; margin-top: -2.8%;">
+                                    <img src="/resources/2.png" style="margin-top: -4px;">
+                                    <img src="/resources/sisgeva3.png" style="margin-top: -4px;">
+                                </div>
+                                <v-spacer></v-spacer>
+                                
+                                
+                            </v-row>
+                        </v-card-text>
+                    </v-sheet>
+
+                    <template>
+                        <link rel="stylesheet"  href="../css/style.css" />
+                        
+                        <v-progress-linear color="#5c76a8" value="0" rounded
+                            style="height: 7px; margin-bottom: -50px; margin-top: -3px;"></v-progress-linear>
+                        <v-row dense>
+                            <v-card class="mx-auto" max-width="250px" outlined
+                                style="border-radius: 20px; box-shadow: 0 0 5px rgba(3, 33, 97, 0.2);">
+                                <v-list-item three-line>
+                                    <v-list-item-content>
+                                        <v-list-item-title class="text-h5 mb-1">
+                                            <h4>Enviadas</h4>
+                                            <v-divider></v-divider>
+                                        </v-list-item-title>
+                                        <v-list-item-subtitle>
+                                            <h3>Totales: {{cant_solis_env_sis}}</h3>
+                                        </v-list-item-subtitle>
+                                        <v-progress-linear color="#255ffd" buffer-value="0" value="20" stream
+                                            style="margin-top: 2px;">
+                                        </v-progress-linear>
+                                    </v-list-item-content>
+                                    <v-list-item-avatar size="60" text @click="listado='Enviada';listado_soli();"
+                                        style=" box-shadow: 0 0 5px rgba(3, 33, 97, 0.2);background: linear-gradient(to bottom right, #255ffd, #6279a8); padding: 20px; margin-top: 20px;">
+                                        <v-icon dark size="30">mdi-email</v-icon>
+                                    </v-list-item-avatar>
+                                </v-list-item>
+                            </v-card>
+
+                            <v-card class="mx-auto" max-width="260" outlined
+                                style="border-radius: 20px; box-shadow: 0 0 5px rgba(3, 33, 97, 0.2);">
+                                <v-list-item three-line>
+                                    <v-list-item-content>
+                                        <v-list-item-title class="text-h5 mb-1">
+                                            <h4>En revisión</h4>
+                                            <v-divider></v-divider>
+                                        </v-list-item-title>
+                                        <v-list-item-subtitle>
+                                            <h3>Totales: {{cant_solis_rev_sis}}</h3>
+                                        </v-list-item-subtitle>
+                                        <v-progress-linear color="#ff8e3c" buffer-value="0" value="20" stream
+                                            style="margin-top: 2px;">
+                                        </v-progress-linear>
+                                    </v-list-item-content>
+                                    <v-list-item-avatar size="60" text @click="listado='En revisión';listado_soli();"
+                                        style=" box-shadow: 0 0 5px rgba(3, 33, 97, 0.2); background: linear-gradient(to bottom right, #ff8e3c, #fecb3d); padding: 20px; margin-top: 20px;">
+                                        <v-icon dark size="30">mdi-email-open</v-icon>
+                                    </v-list-item-avatar>
+                                </v-list-item>
+                            </v-card>
+
+                            <v-card class="mx-auto" max-width="260" outlined
+                                style="border-radius: 20px;  box-shadow: 0 0 5px rgba(3, 33, 97, 0.2);">
+                                <v-list-item three-line>
+                                    <v-list-item-content>
+                                        <v-list-item-title class="text-h5 mb-1">
+                                            <h4>Aprobadas</h4>
+                                            <v-divider></v-divider>
+                                        </v-list-item-title>
+                                        <v-list-item-subtitle>
+                                            <h3>Totales: {{cant_solis_apr_sis}}</h3>
+                                        </v-list-item-subtitle>
+                                        
+                                    </v-list-item-content>
+                                    <v-list-item-avatar size="60" text @click="listado='Aprobada';listado_soli();"
+                                        style="box-shadow: 0 0 5px rgba(3, 33, 97, 0.2); background: linear-gradient(to bottom right, #58f058, #1a8d03); padding: 20px; margin-top: 20px;">
+                                        <v-icon dark size="30">mdi-email-check</v-icon>
+                                    </v-list-item-avatar>
+                                </v-list-item>
+                            </v-card>
+
+                            <v-card class="mx-auto" max-width="280" outlined
+                                style="border-radius: 20px;  box-shadow: 0 0 5px rgba(3, 33, 97, 0.2);">
+                                <v-list-item three-line>
+                                    <v-list-item-content>
+                                        <v-list-item-title class="text-h5 mb-1">
+                                            <h4>Suspendidas</h4>
+                                            <v-divider></v-divider>
+                                        </v-list-item-title>
+                                        <v-list-item-subtitle>
+                                            <h3>Totales: {{cant_solis_sus_sis}}</h3>
+                                        </v-list-item-subtitle>
+                                        
+                                    </v-list-item-content>
+                                    <v-list-item-avatar size="60" text @click="listado='Suspendida';listado_soli();"
+                                        style="box-shadow: 0 0 5px rgba(3, 33, 97, 0.2); background: linear-gradient(to bottom right, #9a58f0, #8d0382); padding: 20px; margin-top: 20px;">
+                                        <v-icon dark size="30">mdi-email-lock</v-icon>
+                                    </v-list-item-avatar>
+                                </v-list-item>
+                            </v-card>
+
+                            <v-card class="mx-auto" max-width="265" outlined
+                                style="border-radius: 20px;  box-shadow: 0 0 5px rgba(3, 33, 97, 0.2);">
+                                <v-list-item three-line>
+
+                                    <v-list-item-content>
+                                        <v-list-item-title class="text-h5 mb-1">
+                                            <h4>Rechazadas</h4>
+                                            <v-divider></v-divider>
+                                        </v-list-item-title>
+                                        <v-list-item-subtitle>
+                                            <h3>Totales: {{cant_solis_rec_sis}}</h3>
+                                        </v-list-item-subtitle>
+                                        
+                                    </v-list-item-content>
+                                            
+                                    <v-list-item-avatar size="60" text @click="listado='Rechazada';listado_soli();"
+                                        style=" box-shadow: 0 0 5px rgba(3, 33, 97, 0.2); background: linear-gradient(to bottom right, #ff833c, #ff3e6a); padding: 20px;">
+                                        <v-icon dark size="30">mdi-email-remove</v-icon>
+                                    </v-list-item-avatar>
+                                </v-list-item>
+                            </v-card>
+                        </v-row>
+                    </template>
+
+                
+
+                    <v-card id="card_t">
+                        <v-card-content>
+                            <v-card-title>
+                                <h2 class="px-1">{{ listado }}</h2>
+                                <v-spacer>
+                                    </v-spacer>
+                                <v-text-field v-model="search" append-icon="mdi-magnify" label="Buscar" rounded outlined
+                                    hide-details class="col-3" style="max-width: 350px;">
+                                </v-text-field>
+                                <!--   GESTION SEDES Y EMPLEADOS   -->
+
+                                <v-btn-toggle rounded >
+                                    <v-btn color="#94C2D6" @click="listado='Empleados';list_emp();" id="tg_one"
+                                        style="box-shadow: 0 0 5px rgba(3, 33, 97, 0.2);">
+                                        <v-icon>mdi-account-multiple</v-icon>
+                                    </v-btn>
+                                </v-btn-toggle>
+                                <v-btn-toggle rounded >
+                                    <v-btn color="#EBE88E" @click="listado='Sedes';list_emp();" id="tg_one"
+                                        style="box-shadow: 0 0 5px rgba(3, 33, 97, 0.2);">
+                                        <v-icon>mdi-map-marker-outline</v-icon>
+                                    </v-btn>
+                                </v-btn-toggle>
+
+                                
+                                <v-col cols="auto ">
+                                    <v-btn-toggle shaped mandatory v-model="toggle_exclusive"
+                                        style=" box-shadow: 0 0 5px rgba(3, 33, 97, 0.2);">
+                                        
+                                        <v-btn color="#00A2FF" text @click="listado='Enviada';listado_soli();">
+                                            <v-icon>mdi-email</v-icon>
+                                        </v-btn>
+                                        <v-btn color="#FFAA00" text @click="listado='En revisión';listado_soli();">
+                                            <v-icon>mdi-email-open</v-icon>
+                                        </v-btn>
+                                        <v-btn color="#42FF00" text @click="listado='Aprobada';listado_soli();">
+                                            <v-icon>mdi-email-check</v-icon>
+                                        </v-btn>
+                                        <v-btn color="#CD00FF" text @click="listado='Suspendida';listado_soli();">
+                                            <v-icon>mdi-email-lock</v-icon>
+                                        </v-btn>
+                                        <v-btn color="red" text @click="listado='Rechazada';listado_soli();">
+                                            <v-icon>mdi-email-remove</v-icon>
+                                        </v-btn>
+                                    </v-btn-toggle>
+                                </v-col>
+
+                                <!--Dialogo Creación-->
+                                <v-col cols="auto" style="margin-left: 20px;">
+                                    <v-btn-toggle rounded style="margin-left: -30px;">
+                                        <v-btn @click="create_di = true" id="tg_one"
+                                            style="box-shadow: 0 0 5px rgba(3, 33, 97, 0.2);">
+                                            <v-icon>mdi-email-plus</v-icon>
+                                        </v-btn>
+                                    </v-btn-toggle>
+                                    
+                                    <v-dialog max-width="600" persistent v-model="create_di">
+
+                                        <!--Titulo-->
+                                        <v-toolbar color="#606F8C" fixed dark style="text-align: center;">
+                                            <h3 style="margin-left: 20px;">Agregar Solicitud</h3>
+                                            <v-spacer></v-spacer>
+                                            <v-btn class="ma-2" text class="close" icon color="white lighten-2"
+                                                @click="resetInfoC();">
+                                                <v-icon>mdi-close-thick</v-icon>
+                                            </v-btn>
+                                        </v-toolbar>
+
+
+                                        <!--Contenido-->
+                                        <v-card-text style="background-color: whitesmoke;">
+                                            <v-form ref="create" v-model="valid" lazy-validation>
+                                                <v-card-text>
+                                                    <v-col class="mx-auto" style="text-align: center;">
+                                                        <v-autocomplete v-model="empleado_e"
+                                                            :no-data-text="($vuetify.noDataText = 'Empleado no encontrado.')"
+                                                            :rules="[v => !!v || 'Por favor, ingrese el empleado.']"
+                                                            required :items="listado_empleados" solo outlined
+                                                            label="Empleado" item-value="id_empleado"
+                                                            item-text="nombres_empleado">
+                                                            <template v-slot:selection="data">
+                                                                <v-avatar left>
+                                                                    <v-icon style="color: #606F8C;">
+                                                                        mdi-account-circle</v-icon>
+                                                                </v-avatar>
+                                                                <v-list-item-title>
+                                                                    <strong>{{ data.item.id_empleado }}</strong> -
+                                                                    {{data.item.nombres_empleado}}
+                                                                </v-list-item-title>
+                                                            </template>
+                                                            <template v-slot:item="data">
+                                                                <template v-if="typeof data.item !== 'object'">
+                                                                    <v-list-item-content v-text="data.item">
+                                                                    </v-list-item-content>
+                                                                </template>
+                                                                <template v-else>
+                                                                    <v-list-item-content>
+                                                                        <v-row>
+                                                                            <v-col
+                                                                                style="margin-top: -14px; text-align: center;">
+                                                                                <v-list-item-tittle>
+                                                                                    <v-list-item-avatar>
+                                                                                        <v-icon style="color: #606F8C;">
+                                                                                            mdi-tooltip-account
+                                                                                        </v-icon>
+                                                                                    </v-list-item-avatar>
+                                                                                </v-list-item-tittle>
+                                                                                <v-list-item-subtitle
+                                                                                    style="color: #606F8C; margin-top: -5px;">
+                                                                                    <strong>Sede:</strong>
+                                                                                    {{data.item.sede_empleado}}
+                                                                                </v-list-item-subtitle>
+                                                                            </v-col>
+                                                                            <v-col>
+                                                                                <v-list-item-title>
+                                                                                    {{data.item.id_empleado}}
+                                                                                </v-list-item-title>
+                                                                                <br>
+                                                                                <v-list-item-subtitle>
+                                                                                    <strong>Contrato:</strong>
+                                                                                    {{data.item.f_contrato}}
+                                                                                </v-list-item-subtitle>
+                                                                            </v-col>
+                                                                            <v-col>
+                                                                                <v-list-item-title>
+                                                                                    <strong>{{
+                                                                                        data.item.nombres_empleado}}</strong>
+                                                                                </v-list-item-title>
+                                                                                <br>
+                                                                                <v-list-item-subtitle>
+                                                                                    <strong>Periodos:</strong>
+                                                                                    {{data.item.periodos_dis}}
+                                                                                    <strong> Días: </strong>
+                                                                                    {{data.item.dias}}
+                                                                                </v-list-item-subtitle>
+                                                                            </v-col>
+                                                                            <v-col>
+                                                                                <v-list-item-title
+                                                                                    v-html="'Area ' + data.item.area_empleado">
+                                                                                </v-list-item-title>
+                                                                                <br>
+                                                                                <v-list-item-subtitle>
+                                                                                    <strong>Cargo:</strong>
+                                                                                    {{data.item.nom_cargo}}
+                                                                                </v-list-item-subtitle>
+                                                                            </v-col>
+                                                                        </v-row>
+                                                                    </v-list-item-content>
+                                                                </template>
+                                                            </template>
+                                    <v-list-item-content>
+                                        <v-list-item-title class="text-h5 mb-1">
+                                            <h4>Rechazadas</h4>
+                                            <v-divider></v-divider>
+                                        </v-list-item-title>
+                                        <v-list-item-subtitle>
+                                                        </v-autocomplete>
+                                                    </v-col>
+
+                                                    <v-col class="col-12" style="margin-top: -21px;">
+                                                        <v-row>
+                                                            <v-col class="col-5">
+                                                                <v-select :items="tipo_vac" v-model="tipo_vac_soli"
+                                                                    :rules="[v => !!v || 'Por favor, ingrese el tipo de vacaciones.']"
+                                                                    required label="Tipo de vacaciones" solo outlined>
+                                                                </v-select>
+                                                            </v-col>
+                                                            <v-col class="col-2">
+                                                                <v-text-field outlined type="number" min="1" max="8"
+                                                                    solo v-if="tipo_vac_soli!='Disfrutados'"
+                                                                    :disabled="!tipo_vac_soli" label="Días"
+                                                                    :rules="[rules.required, rules.cant, rules.remu]"
+                                                                    v-model="solicitud.dias_solicitados">
+                                                                </v-text-field>
+                                                                <v-text-field outlined type="number" min="1" max="15"
+                                                                    solo v-if="tipo_vac_soli=='Disfrutados'"
+                                                                    :disabled="!tipo_vac_soli" label="Días"
+                                                                    :rules="[rules.required, rules.cant, rules.noRemu]"
+                                                                    v-model="solicitud.dias_solicitados">
+                                                                </v-text-field>
+                                                            </v-col>
+                                                            <!--Rango-->
+                                                            <v-col class="col-5">
+                                                                <v-date-picker v-model="rango" is-range locale="es-CO"
+                                                                    :model-config="modelConfig" :min-date='new Date()'
+                                                                    :attributes="attributes">
+                                                                    <template v-slot="{ inputValue, inputEvents }">
+                                                                        <v-text-field outlined ref="rango_fecha"
+                                                                            :rules="[v => !!v || 'El periodo de vacaciones es obligatorio.']"
+                                                                            required locale='es-CO'
+                                                                            :model-config="modelConfig" solo readonly
+                                                                            :disabled="!solicitud.dias_solicitados"
+                                                                            v-on="inputEvents.start"
+                                                                            label="Fecha a disfrutar"
+                                                                            v-model="textoRango()">
+                                                                        </v-text-field>
+                                                                    </template>
+                                                                </v-date-picker>
+                                                            </v-col>
+                                                        </v-row>
+                                                    </v-col>
+
+                                                    <v-col class="col-12" style="margin-top: -12px;">
+                                                        <v-divider></v-divider>
+                                                        <v-row style="margin-top: 8px;">
+                                                            <v-col class="col-4">
+                                                                <v-switch v-model="enabled" inset color="#606F8C"
+                                                                    style="color: #811a02; font-weight: bold;"
+                                                                    :label="`Deseo asignar un estado`"
+                                                                    @click="$refs.estado_s.reset(); estado_soli='Enviada'">
+                                                                </v-switch>
+                                                            </v-col>
+                                                            <v-col style="margin-top: 13px; margin-left: -12px;">
+                                                                <v-select :items="estado" v-model="estado_soli"
+                                                                    label="Estado solicitud" solo outlined
+                                                                    :disabled="!enabled" ref="estado_s">
+                                                                </v-select>
+                                                            </v-col>
+                                                            <v-tooltip left color="black">
+                                                                <template v-slot:activator="{ on, attrs }">
+                                                                    <v-icon style="margin-top: -23px; color: #606F8C;"
+                                                                        dark v-bind="attrs" v-on="on">
+                                                                        mdi-information
+                                                                    </v-icon>
+                                                                </template>
+                                                                <span>La solicitud se crea con el estado<strong>
+                                                                        "Enviada"</strong>, si <br>
+                                                                    desea cambiarlo puede asignar otro
+                                                                    estado.</span>
+                                                            </v-tooltip>
+                                                        </v-row>
+                                                        <v-divider></v-divider>
+
+                                                        <v-col style="margin-top: 33px; margin-bottom: 2px;">
+                                                            <v-row>
+                                                                <v-spacer></v-spacer>
+                                                                <v-btn elevation="2" rounded dark class="col-2"
+                                                                    id="btn_ag" @click="validate('crear');">
+                                                                    <v-icon>mdi-email-plus-outline</v-icon>
+                                                                    <a>Agregar</a>
+                                                                </v-btn>
+                                                                <v-spacer></v-spacer>
+                                                            </v-row>
+                                                        </v-col>
+                                                    </v-col>
+                                                </v-card-text>
+                                            </v-form>
+                                        </v-card-text>
+                                    </v-dialog>
+                                </v-col>
+
+                                
+                                
+                                </v-btn-toggle>
+                                <!--Dialogo edicion-->
+                                <v-dialog max-width="700" persistent v-model="edit_di" ref="edit">
+                                    <template>
+                                        <v-card>
+                                            <v-form ref="edit" v-model="valid" lazy-validation>
+                                                <!--Titulo-->
+                                                <v-toolbar color="#606F8C" fixed dark style="text-align: center;">
+                                                    <h3 style="margin-left: 20px;">Editar Solicitud</h3>
+                                                    <v-spacer></v-spacer>
+                                                    <v-btn class="ma-2" text class="close" icon color="white lighten-2"
+                                                        @click="resetInfoI();">
+                                                        <v-icon>mdi-close-thick</v-icon>
+                                                    </v-btn>
+                                                </v-toolbar>
+                                                <!--Contenido-->
+                                                <v-card-text style="background-color: whitesmoke;">
+                                                    <br>
+                                                    <v-col class="col-12" style="margin-top: -17px;">
+                                                        <v-row>
+                                                            <v-col class="col-4">
+                                                                <v-text-field class="edit_c" label="Registro"
+                                                                    v-model="solicitud.fecha_solicitud" readonly
+                                                                    prepend-inner-icon="mdi-calendar" outlined>
+                                                                </v-text-field>
+                                                            </v-col>
+                                                            <!--Rango-->
+                                                            <v-col class="col-8">
+                                                                <v-text-field class="edit_c" label="Empleado"
+                                                                    v-model="solicitud.empleado" readonly
+                                                                    prepend-inner-icon="mdi-account-circle" outlined>
+                                                                </v-text-field>
+
+                                                            </v-col>
+                                                        </v-row>
+                                                    </v-col>
+                                                    <v-col class="col-12" style="margin-top: 7px;">
+                                                        <v-text-field class="edit_c" label="Ubicación"
+                                                            v-model="solicitud.ubicacion" readonly
+                                                            prepend-inner-icon="mdi-home-circle" outlined>
+                                                        </v-text-field>
+                                                    </v-col>
+
+                                                    <v-col class="col-12" style="margin-top: 7px; margin-left: 13px;">
+                                                        <v-row>
+                                                            <v-col class="col-6">
+                                                                <v-text-field class="edit_c"
+                                                                    v-model="solicitud.periodo_vac"
+                                                                    label="Periodo de vacaciones" readonly
+                                                                    prepend-inner-icon="mdi-calendar-range" outlined>
+                                                                </v-text-field>
+                                                            </v-col>
+                                                            <v-col class="col-3">
+                                                                <v-select :items="estado2" v-model="estados_soli"
+                                                                    elevation="2" class="edit_c" label="Estado"
+                                                                    outlined>
+                                                                </v-select>
+                                                            </v-col>
+                                                            <v-col class="col-3">
+                                                                <v-btn id="btn_ac" @click="validate('editar');">
+                                                                    Actualizar
+                                                                </v-btn>
+                                                            </v-col>
+                                                        </v-row>
+                                                    </v-col>
+
+                                                    <v-col class="col-12" v-if="estados_soli=='Rechazada'"
+                                                        style="margin-top: 7px;">
+                                                        <v-row>
+                                                            <v-col class="12">
+                                                                <v-textarea outlined name="input-7-4" solo
+                                                                    :rules="[v => !!v || 'El motivo de rechazo es obligatorio.']"
+                                                                    placeholder="Indique el motivo del rechazo de la solicitud."
+                                                                    v-model="solicitud.motivo">
+                                                                </v-textarea>
+                                                            </v-col>
+                                                        </v-row>
+                                                    </v-col>
+
+                                                </v-card-text>
+                                            </v-form>
+                                        </v-card>
+                                    </template>
+                                </v-dialog>
+
+
+                                <!--Dialogo suspensión-->
+                                <v-dialog max-width="400" persistent v-model="suspend_di" ref="suspe">
+                                    <template>
+                                        <v-card>
+                                            <v-form ref="susp" v-model="valid" lazy-validation>
+                                                <!--Titulo-->
+                                                <v-card-title>
+                                                    <h4 style="margin-left: 10px; color:#2f4978;">Suspender Solicitud
+                                                    </h4>
+                                                    <v-spacer></v-spacer>
+                                                    <v-spacer></v-spacer>
+                                                    <v-btn class="ma-2" text class="close" icon color="red lighten-2"
+                                                        @click="solicitud.motivo = null; suspend_di = false;">
+                                                        <v-icon>mdi-close-circle</v-icon>
+                                                    </v-btn>
+                                                </v-card-title>
+                                                <!--Contenido-->
+                                                <v-card-text style="background-color: rgba(245, 230, 179, 0.178);">
+                                                    <br>
+                                                    <v-row>
+                                                        <v-col class="col-12">
+                                                            <v-textarea outlined solo
+                                                                :rules="[v => !!v || 'El motivo de suspención es obligatorio.']"
+                                                                placeholder="Indique el motivo."
+                                                                v-model="solicitud.motivo">
+                                                            </v-textarea>
+                                                        </v-col>
+                                                    </v-row>
+                                                    <v-row style="margin-top: -1px;">
+                                                        <v-spacer></v-spacer>
+                                                        <v-btn @click="validate('suspender');" id="btn_ac">
+                                                            Suspender
+                                                        </v-btn>
+                                                        <v-spacer></v-spacer>
+                                                    </v-row>
+                                                    <br>
+                                                </v-card-text>
+                                            </v-form>
+                                        </v-card>
+                                    </template>
+                                </v-dialog>
+                            </v-card-title>
+<br/>
+                            <v-card-content style="width: max-content">
+                                <v-data-table :headers="headers" :items="desserts" :search="search">
+                                    <!--Acciones-->
+                                    <template v-slot:item.actions="{ item }">
+                                        <v-tooltip bottom color="primary">
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-icon @click="editItem(item)" class="mr-2 btn_editar" v-bind="attrs"
+                                                    v-on="on">
+                                                    mdi-pencil
+                                                </v-icon>
+                                            </template>
+                                            <span>Editar</span>
+                                        </v-tooltip>
+                                        <v-tooltip bottom color="error">
+                                            <template v-slot:activator="{ on, attrs }">
+                                                
+                                            </template>
+                                            <span>Eliminar</span>
+                                        </v-tooltip>
+                                    </template>
+                                    <template v-slot:item.actions2="{ item }">
+                                        <v-tooltip bottom color="warning">
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-icon @click="suspendItem(item)" class="btn_suspender" v-bind="attrs"
+                                                    v-on="on">
+                                                    mdi-pause-circle
+                                                </v-icon>
+                                            </template>
+                                            <span>Suspender</span>
+                                        </v-tooltip>
+                                        <v-tooltip bottom color="error">
+                                            <template v-slot:activator="{ on, attrs }">
+                                               
+                                            </template>
+                                            <span>Eliminar</span>
+                                        </v-tooltip>
+
+                                        <v-tooltip bottom color="primary">
+                                            <template v-slot:pdf="{ on, attrs }">
+                                                <v-icon @click="" class="btn_pdf" v-bind="attrs"
+                                                    v-on="on">
+                                                    mdi-file-pdf
+                                                </v-icon>
+                                            </template>
+                                            <span>Generar PDF</span>
+                                        </v-tooltip>
+                                    </template>
+
+                                    <template v-slot:item.actions3="{ item }">
+                                        <v-tooltip bottom color="error">
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-icon @click="deleteItem(item)" class="btn_eliminar" v-bind="attrs"
+                                                    v-on="on">
+                                                    mdi-delete
+                                                </v-icon>
+                                            </template>
+                                            <span>Eliminar</span>
+                                        </v-tooltip>
+                                    </template>
+                                    <template v-slot:item.actions4="{ item }">
+                                        <v-tooltip bottom color="primary">
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-icon @click="editEmpleado(item)" class="mr-2 btn_editar" v-bind="attrs"
+                                                    v-on="on">
+                                                    mdi-pencil
+                                                </v-icon>
+                                            </template>
+                                            <span>Editar</span>
+                                        </v-tooltip>
+                                        <v-tooltip bottom color="error">
+                                            <template v-slot:activator="{ on, attrs }">
+                                                
+                                            </template>
+                                            <span>Eliminar</span>
+                                        </v-tooltip>
+                                    </template>
+                                    <template v-slot:no-data>
+                                        <h3>No existen datos</h3>
+                                    </template>
+                                    <template v-slot:item.cant_vac_dias="{ item }">
+                                        <strong> {{ item.cant_vac_dias }}</strong>
+                                    </template>
+                                    <template v-slot:no-results>
+                                        <h3> Lo sentimos, no hay resultado para '{{ search }}'.</h3>
+                                    </template>
+                                </v-data-table>
+                            </v-card-content>
+                        </v-card-content>
+                    </v-card>
+                </v-main>
+            
+            
+            
+            </div>
+        </v-app>
+
+        <!-- aqui continua el navbar, este muestra una lista con las clases que tenemos actualmente -->
+        <v-navigation-drawer v-model="drawer" absolute temporary style="font-family: Roboto,sans-serif;">
+            <v-list dense nav>
+                
+                <v-list-item link href='/empleados'>
+                    <!-- Nos redirecciona a la vista sedes -->
+                    <v-list-item-icon>
+                        <v-icon>mdi-account-multiple</v-icon> <!-- Hacemos uso de un icon -->
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                        <v-list-item-title> Gestión Empleados</v-list-item-title> <!-- Mandamos el nombre de la vista -->
+                    </v-list-item-content>
+                </v-list-item>
+    
+                <v-list-item link href='/informe'>
+                    <!-- Nos redirecciona a la vista empleados -->
+                    <v-list-item-icon>
+                        <v-icon>mdi-account-multiple</v-icon> <!-- Hacemos uso de un icon -->
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                        <v-list-item-title> Informes</v-list-item-title> <!-- Mandamos el nombre de la vista -->
+                    </v-list-item-content>
+                </v-list-item>
+    
+                <v-list-item link href='/solicitud'>
+                    <!-- Nos redirecciona a la vista solicitud -->
+                    <v-list-item-icon>
+                        <v-icon>mdi-folder</v-icon> <!-- Hacemos uso de un icon -->
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                        <v-list-item-title> Solicitudes</v-list-item-title> <!-- Mandamos el nombre de la vista -->
+                    </v-list-item-content>
+                </v-list-item>
+                <!-- dialogo para cambiar la contraseña del usuario -->
+                <v-list-item link href='##'>
+                    <!-- Nos redirecciona a la vista cambiar contraseña -->
+                    <v-list-item-icon>
+                        <v-icon>mdi-key</v-icon> <!-- Hacemos uso de un icon -->
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                        <div>
+                            <v-app>
+                                <v-main>
+                                    
+                                    <v-btn @click="dialogoContrasenia = true" >Cambiar contraseña</v-btn>
+                                    
+                                    <v-dialog v-model="dialogoContrasenia" width="500">
+                                        <v-form ref="edit" v-model="valid" lazy-validation>
+                                                <!--Titulo-->
+                                                <v-toolbar color="#606F8C" fixed dark style="text-align: center;">
+                                                    <h3 style="margin-left: 20px;">Actualizar contraseña</h3>
+                                                    <v-spacer></v-spacer>
+                                                    <v-btn class="ma-2" text class="close" icon color="white lighten-2"
+                                                        @click="dialogoContrasenia = false">
+                                                        <v-icon>mdi-close-thick</v-icon>
+                                                    </v-btn>
+                                                </v-toolbar>
+                                                <!--Contenido para cambiar contraseña-->
+                                                <v-card-text style="background-color: whitesmoke;">
+                                                    <br>
+                                                    <v-form>
+                                                        <v-text-field
+
+                                                        id="passwordActual" 
+                                                        name="passwordActual" 
+                                                        label="Actual contraseña"
+                                                        type="password"
+                                                        v-model="currentPassword"
+                                                        ></v-text-field>
+
+                                                        <v-text-field
+                                                        id="passwordNueva" 
+                                                        name="passwordNueva" 
+                                                        label="Nueva contraseña"
+                                                        type="password"
+                                                        v-model="newPassword"
+                                                        ></v-text-field>
+
+                                                        <v-text-field
+                                                        label="Valide su contraseña"
+                                                        type="password"
+                                                        v-model="newPassword"
+                                                        ></v-text-field>
+                                                    </v-form>
+
+                                                    
+                                                            <v-col class="col-3">
+                                                                <v-btn id="btn_ac" @click="guardarContrasenia">
+                                                                    Guardar
+                                                                </v-btn>
+                                                            </v-col>
+                                                        </v-row>
+                                                    </v-col>
+                                                </v-card-text>
+                                            </v-form>
+                                    </v-dialog>
+                                </v-main>
+                            </v-app>
+                        </div>
+                    </v-list-item-content>
+                </v-list-item>
+            </v-list>
+            </v-navegation-drawer>
+
+    </div>
+               
+    
+    
+
+    <!-- Hacemos uso de los cdn -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.js"
+        integrity="sha512-nqIFZC8560+CqHgXKez61MI0f9XSTKLkm0zFVm/99Wt0jSTZ7yeeYwbzyl0SGn/s8Mulbdw+ScCG41hmO2+FKw=="
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.0.2/dist/sweetalert2.all.min.js"></script>
+
+    <!-- 1. Link Vue Javascript -->
+    <script src='https://unpkg.com/vue/dist/vue.js'></script>
+
+    <!-- 2. Link VCalendar Javascript (Plugin automatically installed) -->
+    <script src='https://unpkg.com/v-calendar'></script>
+
+    <script>
+        // Solicitudes.
+        let url = 'http://localhost:3000/api/solicitud/';
+         // Listado empleados
+         let url2 = 'http://localhost:3000/api/empleados';
+        // Listado empleados para buscar por id
+        let url3 = 'http://localhost:3000/api/empleado';
+        // Cantidad solicitudes actuales del sistema segùn su estado.
+        let url4 = 'http://localhost:3000/api/cant_solicitudes_act_sis/';
+        // Cantidad solicitudes del sistema segùn su estado.
+        let url5 = 'http://localhost:3000/api/cant_solicitudes_sis/';
+        // Listado de empleados con vacaciones disponibles.
+        let url6 = 'http://localhost:3000/api/listado_empleados_vac_dis/';
+        // Comprueba que el rango de fechas de la solicitud sea el idoneo considerando los requerimientos.
+        let url7 = 'http://localhost:3000/api/efecha/';
+        // Extrae las fechas de los días Feriados Fijos.
+        let url8 = 'http://localhost:3000/api/feriados/';
+        // Actualiza la solicitud.
+        let url10 = 'http://localhost:3000/api/actualizar_soli/';
+        // Actualiza la solicitud.
+        let url11 = 'http://localhost:3000/api/filtrado_solicitudes/';
+        // Suspende la solicitud
+        let url12 = 'http://localhost:3000/api/suspender_soli/';
+        // Añade los días aprobados
+        let url13 = 'http://localhost:3000/api/anadir_dias/';
+        // Resta los días aprobados
+        let url14 = 'http://localhost:3000/api/restar_dias/';
+        // Información del usuario en sesión
+        let url15 = 'http://localhost:3000/api/datos/';
+
+        //Creación del proyecto de Vue
+        new Vue({
+            el: '#solicitud',
+            //Creación de Vuetify
+            vuetify: new Vuetify(),
+            data() {
+                // Constante que modela el listado de los días feriados
+                const feriados_f = [
+                    {
+                        description: 'prueba',
+                        isComplete: false,
+                        dates: [{ months: 3, days: 6 }],
+                        color: 'red'
+                    },
+                ];
+                return {
+                    passwordActual: '', // Definimos la propiedad contrasenia actual
+                    passwordNueva: '',
+                    //inicializamos esta funcion en false para que cuando se haga clic en el navbar este se pueda desplegar
+                    drawer: false,
+                    //Datos usuario en sesión
+                    rol_s: null,
+                    area_s: null,
+                    // Festivos
+                    incId: feriados_f.length,
+                    feriados_f,
+                    enabled: false,
+                    toggle_exclusive: 0,
+                    listado_empleados: [],
+                    estado: ['En revisión', 'Aprobada'],
+                    estado2: ['Enviada', 'En revisión', 'Aprobada', 'Rechazada'],
+                    tipo_vac: ['Remunerada', 'Disfrutados'],
+                    search: '',
+                    listado: '',
+                    valid: true,
+                    create_di: false, // modela la vista del dialogo de creacion
+                    edit_di: false, // modela la vista del dialogo de edicion
+                    dialogoContrasenia: false,
+                    suspend_di: false,
+                    // Fecha actual
+                    f_actual: new Date().toISOString('es-CO').split('T')[0],
+                    //Id del empleado del dialogo de creacion
+                    empleado_e: null,
+                    // Tipo de vacaciones del dialogo de creacion
+                    tipo_vac_soli: null,
+                    // Estado de la solicitud del dialogo de creacion
+                    estado_soli: 'Enviada',
+                    estados_soli: null,
+                    // Obliga al usuario a seleccionar el tipo de la solicitud antes de seleccionar la fecha
+                    activar_fecha: false,
+                    // Icono para el boton de pantalla completa
+                    icono_full_ex: 'mdi-fullscreen',
+                    //Datos Tabla
+                    headers: [{}],
+                    headers0: [{ text: 'N°', align: 'start', value: 'id' }, // Todas
+                    { text: 'Registro', value: 'fecha' },
+                    { text: 'Cédula', value: 'id_emp' },
+                    { text: 'Empleado', value: 'nom_empleado' },
+                    { text: 'Sede', value: 'sede' },
+                    { text: 'Area', value: 'area' },
+                    { text: 'Cargo', value: 'cargo' },
+                    { text: 'Contrato', value: 'fecha_contrato' },
+                    { text: 'Tipo', value: 'tipo', sortable: false },
+                    { text: 'Periodo |Días Pendientes por disfrutar|', value: 'periodo_vac' },
+                    { text: 'Días', value:'diasDisPeriodo'},                    
+                    { text: 'Fecha Vacacional | Dias vacaciones|', value: 'fecha_vac', sortable: false }],
+                    headers1: [{ text: 'N°', align: 'start', value: 'id' }, // Enviadas o en revisión
+                    { text: 'Registro', value: 'fecha' },
+                    { text: 'Cédula', value: 'id_emp' },
+                    { text: 'Empleado', value: 'nom_empleado' },
+                    { text: 'Sede', value: 'sede' },
+                    { text: 'Area', value: 'area' },
+                    { text: 'Cargo', value: 'cargo' },
+                    { text: 'Contrato', value: 'fecha_contrato' },
+                    { text: 'Tipo', value: 'tipo', sortable: false },
+                    { text: 'Periodo ', value: 'periodo_vac' },
+                    { text: 'Días', value:'diasDisPeriodo'},
+                    { text: 'Fecha Vacacional | Dias vacaciones|', value: 'fecha_vac', sortable: false },
+                    { text: 'Acciones', value: 'actions', sortable: false }],
+                    headers2: [{ text: 'N°', align: 'start', value: 'id' }, // aprobadas
+                    { text: 'Registro', value: 'fecha' },
+                    { text: 'Cédula', value: 'id_emp' },
+                    { text: 'Empleado', value: 'nom_empleado' },
+                    { text: 'Sede', value: 'sede' },
+                    { text: 'Area', value: 'area' },
+                    { text: 'Cargo', value: 'cargo' },
+                    { text: 'Contrato', value: 'fecha_contrato' },
+                    { text: 'Tipo', value: 'tipo', sortable: false },
+                    { text: 'Periodo', value: 'periodo_vac' },
+                    { text: 'Días', value:'diasDisPeriodo'},
+                    { text: 'Fecha Vacacional | Dias vacaciones|', value: 'fecha_vac', sortable: false },
+                    {text: 'Fecha aprobado', value:'fecha_aprob'},
+                    { text: 'Acciones', value: 'actions2', sortable: false }],
+                    headers3: [{ text: 'N°', align: 'start', value: 'id' }, // Rechazadas
+                    { text: 'Registro', value: 'fecha' },
+                    { text: 'Cédula', value: 'id_emp' },
+                    { text: 'Empleado', value: 'nom_empleado' },
+                    { text: 'Sede', value: 'sede' },
+                    { text: 'Area', value: 'area' },
+                    { text: 'Cargo', value: 'cargo' },
+                    { text: 'Contrato', value: 'fecha_contrato' },
+                    { text: 'Tipo', value: 'tipo', sortable: false },
+                    { text: 'Periodo', value: 'periodo_vac' },
+                    { text: 'Días', value:'diasDisPeriodo'},
+                    { text: 'Fecha Vacacional | Dias vacaciones|', value: 'fecha_vac', sortable: false },
+                    { text: 'Fecha rechazo', value: 'fecha_recha' },
+                    { text: 'Acciones', value: 'actions3', sortable: false }],
+                    headers4: [{ text: 'N°', align: 'start', value: 'id' }, // Suspencion
+                    { text: 'Registro', value: 'fecha' },
+                    { text: 'Cédula', value: 'id_emp' },
+                    { text: 'Empleado', value: 'nom_empleado' },
+                    { text: 'Sede', value: 'sede' },
+                    { text: 'Area', value: 'area' },
+                    { text: 'Cargo', value: 'cargo' },
+                    { text: 'Contrato', value: 'fecha_contrato' },
+                    { text: 'Tipo', value: 'tipo', sortable: false },
+                    { text: 'Periodo ', value: 'periodo_vac' },
+                    { text: 'Días', value:'diasDisPeriodo'},
+                    { text: 'Fecha Vacacional | Dias vacaciones|', value: 'fecha_vac', sortable: false },
+                    { text: 'Fecha suspensión', value: 'fecha_suspe' },
+                    { text: 'Acciones', value: 'actions3', sortable: false }],
+                    headers5: [{ text: 'Id', align: 'start', value: 'empleadoId' }, // Empleados
+                    { text: 'Nombre', value: 'empleadoNombre' },
+                    { text: 'Area', value: 'empleadoArea' },
+                    { text: 'Sede', value: 'empleadoSede' },
+                    { text: 'Cargo', value: 'empleadoCargo' },
+                    { text: 'Roll', value: 'empleadoRoll' },
+                    { text: 'Email', value: 'empleadoEmail' },                    
+                    { text: 'Contraseña', value: 'empleadoContraseña' },
+                    { text: 'Fecha Inicio', value: 'empleadoFechaInicio' },
+                    { text: 'Acciones', value: 'actions4;actions5', sortable: false }],
+                    headers6: [{ text: 'Id', align: 'start', value: 'sede_empleado' }, // Sede
+                    { text: 'Nombre', value: 'sede.nom_sede' },
+                    { text: 'Acciones', value: 'actions4', sortable: false }],
+                    desserts: [
+                        {
+                            
+                            empleadoId: null,
+                            empleadoNombre: null,
+                            empleadoArea: null,
+                            empleadoSede: null,
+                            empleadoCargo:null,
+                            empleadoRoll: null,
+                            empleadoEmail: null,
+                            empleadoContraseña: null,
+                            empleadoFechaInicio: null,
+                            sedeNombre: null,
+                            sedeId: null,
+
+
+                            
+                            id: null,
+                            diasDisPeriodo: null,
+                            fecha: null,
+                            id_emp: null,
+                            nom_empleado: null,
+                            sede: null,
+                            area: null,
+                            cargo: null,
+                            fecha_contrato: null,
+                            periodo_vac: null,
+                            tipo: null,
+                            fecha_vac: null,
+                            estado: null,
+                            fecha_aprob: null,
+                            fecha_recha: null,
+                            fecha_suspe: null
+                        },
+                    ],  // inicializamos esta funcion en null, esta permite cuadrar la lista del navbar
+                    solicitud: {
+                        //Inicializamos las variables de creaciòn
+                        id_solicitud: null,
+                        fecha_solicitud: null,
+                        id_empleado: null,
+                        empleado: null,
+                        ubicacion: null,
+                        peri_ini: null,
+                        peri_fin: null,
+                        tipo_solicitud: null,
+                        fecha_vac_start: null,
+                        fecha_vac_end: null,
+                        estado_solicitud: null,
+                        fecha_aprobacion: null,
+                        fecha_rechazo: null,
+                        dias_solicitados: null,
+                        motivo: null,
+                    },
+                    empleado: {
+                        f_contrato: null,
+                        id_empleado: null,
+                        empleado: null,
+                        sede_empleado: null,
+                        email: null,
+                        password: null,                        
+                        nom_cargo: null,
+                        area_empleado: null,
+                        nom_roll: null,
+                        periodos_dis: null,
+                        dias: 0,
+                    },
+
+                    sede:{
+                        id_sede: null,
+                        nom_sede:null,
+                    },
+                    //Formato de fechas
+                    modelConfig: {
+                        type: 'string',
+                        mask: 'YYYY-MM-DD'
+                    },
+                    rango: {
+                        start: null,
+                        end: null
+                    },
+                    rango2: {
+                        start: null,
+                        end: null
+                    },
+                    // validacion de la cantidad de días de vacaciones
+                    rules: {
+                        required: value => !!value || '',
+                        cant: value => this.solicitud.dias_solicitados != 0 || '',
+                        noRemu: value => this.solicitud.dias_solicitados <= 15 || '',
+                        remu: value => this.solicitud.dias_solicitados <= 8 || '',
+                    },
+                    // Cantidad solicitudes del sistema
+                    cant_solis_env_sis: 0,
+                    porcentaje_solis_env: 0,
+                    cant_solis_rev_sis: 0,
+                    porcentaje_solis_rev: 0,
+                    cant_solis_apr_sis: 0,
+                    cant_solis_rec_sis: 0,
+                    total_aprob_sis: 0,
+                    total_recha_sis: 0,
+                    cant_solis_sus_sis: 0,
+                    total_sus_sis: 0,
+                }
+
+            },
+            // Atributos del picker
+            computed: {
+                attributes() {
+                    return [
+                        // Attributes for feriados_f (feriados fijos)
+                        ...this.feriados_f.map(feri => ({
+                            dates: feri.dates,
+                            dot: {
+                                color: feri.color,
+                                class: feri.isComplete ? 'opacity-75' : '',
+                            },
+                            popover: {
+                                label: feri.description,
+                            },
+                            customData: feri,
+                        })),
+                    ];
+                },
+            },
+            //Nos trae todos los datos de la API y nos las llena en cada variable
+            created() {
+                this.feriados();
+                this.datosUsuario();
+            },
+            methods: {
+                // Extrae los datos del usuario en sesión para aplicar los filtros pertinentes.
+                datosUsuario: function () {
+                    axios.get(url15)
+                        .then(response => {
+                            let datos = response.data;
+                            this.rol_s = datos[0].nom_rol;
+                            if (this.rol_s == 'Admi') { this.area_s = 'Todas'; }
+                            else if (this.rol_s == 'Súper Admi') { this.area_s = 'Administrativa'; }
+                            else if (this.rol_s == 'Súper Admi Op') { this.area_s = 'Operativa'; }
+                            this.listado_emp();
+                            this.listado_soli();
+                            this.cant_solis_actual();
+                        });
+                },
+                // Devuelve la cantidad de solicitudes actuales segun su estado.
+                cant_solis_actual: function () {
+                    axios.get(url4)
+                        .then(response => {
+                            let datos = response.data;
+                            this.total_aprob_sis = 0;
+                            this.total_recha_sis = 0
+                            this.total_sus_sis = 0;
+                            if (datos.length >= 0) {
+                                for (var i in datos) {
+                                    let estado = datos[i].estado_solicitud;
+                                    if (estado == 'Aprobada') { this.total_aprob_sis = datos[i].cantidad; }
+                                    else if (estado == 'Rechazada') { this.total_recha_sis = datos[i].cantidad; }
+                                    else { this.total_sus_sis = datos[i].cantidad; }
+                                }
+                            }
+                            this.cant_solis();
+                        });
+                },// Devuelve la cantidad de solicitudes aprobadas y rechazadas del sistema.
+                cant_solis: function () {
+                    axios.get(url5+this.rol_s)
+                        .then(response => {
+                            let datos = response.data;
+                            for (var i in datos) {
+                                let estado = datos[i].nom_estado;
+                                if (estado == 'Aprobada') { this.cant_solis_apr_sis = datos[i].cantidad; }
+                                else if (estado == 'En revisión') { this.cant_solis_rev_sis = datos[i].cantidad; }
+                                else if (estado == 'Rechazada') { this.cant_solis_rec_sis = datos[i].cantidad; }
+                                else if (estado == 'Suspendida') { this.cant_solis_sus_sis = datos[i].cantidad; }
+                                else { this.cant_solis_env_sis = datos[i].cantidad; }
+                            }
+                        });
+                },
+
+
+                
+                //listado empleado para CRUD
+                list_emp: function () {
+                    this.desserts.splice(0);
+                    if (this.listado == 'Empleados'){this.headers = this.headers5
+                    axios.get(url2)
+                    .then(response =>{
+                        let datos=response.data;
+                        for(var i in datos){
+
+                            this.desserts.push({
+                            empleadoId: datos[i].id_empleado,
+                            empleadoNombre: datos[i].empleado,
+                            empleadoCargo: datos[i].nom_cargo,
+                            empleadoEmail: datos[i].email,                            
+                            empleadoArea:datos[i].nom_area,
+                            empleadoSede:datos[i].nom_sede,
+                            empleadoRoll: datos[i].nom_rol,
+                            empleadoContraseña: datos[i].password,
+                            empleadoFechaInicio: new Date(datos[i].fechaContrato).toISOString('es-CO').split('T')[0]
+
+
+
+                        });
+                    }
+
+
+                    });
+                    
+                    
+                    
+                    }
+                    else if (this.listado == 'Sedes'){this.headers = this.headers6             
+                    
+                    }
+                },
+
+                //Permite almacenar el array de empleados con los datos de empleados de la API
+                listado_emp: function () {
+                    axios.get(url6 + this.area_s)
+                        .then(response => {
+                            let datos = response.data;
+                            for (var i in datos) {
+                                this.listado_empleados.push({
+                                    f_contrato: new Date(datos[i].fechaContrato).toISOString('es-CO').split('T')[0],
+                                    id_empleado: datos[i].id_empleado, nombres_empleado: datos[i].empleado, sede_empleado: datos[i].nom_sede, nom_cargo: datos[i].nom_cargo, area_empleado: datos[i].nom_area,
+                                    periodos_dis: new Date(datos[i].periodo_ini).toISOString('es-CO').split('T')[0] + ' - ' + new Date(datos[i].periodo_fin_1).toISOString('es-CO').split('T')[0],
+                                    dias: datos[i].dias_dis_periodo_1
+                                });
+                            }
+                        });
+                },
+                //Permite almacenar el el array de solitudes en el sistema
+                listado_soli: function () {
+                    this.desserts.splice(0);
+                    if (this.listado == 'Enviada' || this.listado == 'En revisión') { this.headers = this.headers1; }
+                    else if (this.listado == 'Aprobada') { this.headers = this.headers2; }
+                    else if (this.listado == 'Suspendida') { this.headers = this.headers4; }
+                    else { this.headers = this.headers3; }
+                    if (this.listado != 'Todas') {
+                        axios.get(url11 + this.area_s + '/' + this.listado)
+                            .then(response => {
+                                let datos = response.data;
+                                for (var i in datos) {
+                                    this.desserts.push({
+                                        id: datos[i].id,
+                                        fecha: new Date(datos[i].fecha_solicitud).toISOString('es-CO').split('T')[0],
+                                        id_emp: datos[i].id_empleado,
+                                        nom_empleado: datos[i].empleado,
+                                        sede: datos[i].nom_sede,
+                                        area: datos[i].nom_area,
+                                        cargo: datos[i].nom_cargo,
+                                        fecha_contrato: new Date(datos[i].fechaContrato).toISOString('es-CO').split('T')[0],
+                                        periodo_vac: new Date(datos[i].periodo_ini).getFullYear() + ' - ' + new Date(datos[i].periodo_fin).getFullYear(),
+                                        diasDisPeriodo:  datos[i].dias_dis_periodo_1 + ' días ',
+                                        tipo: datos[i].tipo_solicitud,
+                                        fecha_vac: new Date(datos[i].fecha_vac_start).toISOString('es-CO').split('T')[0] + ' - ' + new Date(datos[i].fecha_vac_end).toISOString('es-CO').split('T')[0] + ' (' + datos[i].dias_solicitados + ' días)',
+                                        estado: datos[i].estado_solicitud,
+                                        fecha_aprob: new Date(datos[i].fecha_aprobacion).toISOString('es-CO').split('T')[0],
+                                        fecha_recha: new Date(datos[i].fecha_rechazo).toISOString('es-CO').split('T')[0],
+                                        fecha_suspe: new Date(datos[i].fecha_suspension).toISOString('es-CO').split('T')[0]
+                                    });
+                                }
+                            });
+                    }
+                    else {
+                        this.headers = this.headers0;
+                        axios.get(url + this.rol_s)
+                            .then(response => {
+                                let datos = response.data;
+                                for (var i in datos) {
+                                    this.desserts.push({
+                                        id: datos[i].id,
+                                        fecha: new Date(datos[i].fecha_solicitud).toISOString('es-CO').split('T')[0],
+                                        id_emp: datos[i].id_empleado,
+                                        nom_empleado: datos[i].empleado,
+                                        sede: datos[i].nom_sede,
+                                        area: datos[i].nom_area,
+                                        cargo: datos[i].nom_cargo,
+                                        fecha_contrato: new Date(datos[i].fechaContrato).toISOString('es-CO').split('T')[0],
+                                        periodo_vac: new Date(datos[i].periodo_ini).toISOString('es-CO').split('T')[0] + ' - ' + new Date(datos[i].periodo_fin).toISOString('es-CO').split('T')[0] + ' (' + datos[i].dias_dis_periodo_1 + ' días) ',
+                                        tipo: datos[i].tipo_solicitud,
+                                        fecha_vac: new Date(datos[i].fecha_vac_start).toISOString('es-CO').split('T')[0] + ' - ' + new Date(datos[i].fecha_vac_end).toISOString('es-CO').split('T')[0] + ' (' + datos[i].dias_solicitados + ' días)',
+                                        estado: datos[i].estado_solicitud,
+                                        fecha_aprob: new Date(datos[i].fecha_aprobacion).toISOString('es-CO').split('T')[0],
+                                        fecha_recha: new Date(datos[i].fecha_rechazo).toISOString('es-CO').split('T')[0],
+                                        fecha_suspe: new Date(datos[i].fecha_suspension).toISOString('es-CO').split('T')[0]
+                                    });
+                                }
+                            });
+                    }
+                },
+                textoRango: function () {
+                    if (this.rango.end != null) {
+                        if (this.rango.start == this.rango.end) {
+                            const f = new Date(this.rango.start);
+                            const fe = new Date(f.setDate(f.getDate() + 16)).toISOString('es-CO').split('T')[0];
+                            this.rango = { start: this.rango.start, end: fe };
+                            //Añade un día si el rango finaliza en domingo o inicia un fin de semana
+                            if (this.rango.start.getDay() == 6 || this.rango.start.getDay() == 0 || fe.getDay() == 0) {
+                                const fe2 = new Date(f.setDate(f.getDate() + 17)).toISOString('es-CO').split('T')[0];
+                                this.rango = { start: this.rango.start, end: fe2 };
+                            }
+                        }
+                        return this.rango.start + ' - ' + this.rango.end;
+                    }
+                },
+                editItem(item) {
+                    this.solicitud.id_solicitud = Object.assign({}, item).id;
+                    this.solicitud.fecha_solicitud = Object.assign({}, item).fecha;
+                    this.solicitud.ubicacion = Object.assign({}, item).sede + ': ' + Object.assign({}, item).cargo + ' ( Area ' + Object.assign({}, item).area + ')';
+                    this.solicitud.empleado = Object.assign({}, item).id_emp + ': ' + Object.assign({}, item).nom_empleado;
+                    this.solicitud.id_empleado = Object.assign({}, item).id_emp;
+                    this.solicitud.periodo_vac = Object.assign({}, item).fecha_vac;
+                    this.estados_soli = this.listado;
+                    this.edit_di = true;
+                },
+                suspendItem(item) {
+                    this.solicitud.id_solicitud = Object.assign({}, item).id;
+                    this.solicitud.id_empleado = Object.assign({}, item).id_emp;
+                    let f1 = new Date(Object.assign({}, item).fecha_vac.substring(0, 10));
+                    let fecha_vac_ini = new Date(f1.setDate(f1.getDate() + 1));
+                    let f2 = new Date(Object.assign({}, item).fecha_vac.substring(13, 23));
+                    let fecha_vac_fin = new Date(f2.setDate(f2.getDate() + 1));
+                    let fecha_actual = new Date();
+                    let dias = Object.assign({}, item).fecha_vac.substring(25, 26);
+
+                    if (fecha_vac_ini.toISOString('es-CO').split('T')[0] > fecha_actual.toISOString('es-CO').split('T')[0] || fecha_vac_ini.toISOString('es-CO').split('T')[0] == fecha_actual.toISOString('es-CO').split('T')[0]) {
+                        this.solicitud.dias_solicitados = dias;
+                        this.suspend_di = true;
+                    }
+                    else if (fecha_actual.toISOString('es-CO').split('T')[0] == fecha_vac_fin.toISOString('es-CO').split('T')[0]) {
+                        this.solicitud.dias_solicitados = 1;
+                        this.suspend_di = true;
+                    }
+                    else if (fecha_actual.toISOString('es-CO').split('T')[0] > fecha_vac_fin.toISOString('es-CO').split('T')[0]) {
+                        alert('La solicitud no puede ser suspendida, la fecha actual excede por mucho la fecha de vacaciones');
+                    }
+                    else {
+                        this.solicitud.dias_solicitados = (fecha_vac_fin.getDate() - fecha_actual.getDate()) + 1;
+                        this.suspend_di = true;
+                    }
+                },
+                suspender() {
+                    let f = new Date();
+                    let parametros = {
+                        dias_solicitados: this.solicitud.dias_solicitados, estado_solicitud: 4,
+                        fecha_suspension: f, motivo: this.solicitud.motivo
+                    };
+                    axios.post(url12 + this.solicitud.id_solicitud, parametros)
+                        .then(response => {
+                            this.solicitud.motivo = null;
+                            this.actualizarCantDiasDis(this.solicitud.id_empleado, this.solicitud.dias_solicitados, "restar");
+                        });
+                },
+                actualizarCantDiasDis: function (id, dias, tipo) {
+                    let parametros = [dias, id];
+                    if (tipo == "sumar") {
+                        axios.post(url13, parametros).then(response => {
+                            this.solicitud.dias_solicitados = null;
+                            this.solicitud.id_solicitud = null;
+                            this.solicitud.id_emp = null;
+                            this.listado_soli();
+                            this.listado_emp();
+                            this.cant_solis_actual();
+                            this.resetInfoC();
+                        });
+                    }
+                    else {
+                        axios.post(url14, parametros).then(response => {
+                            this.solicitud.dias_solicitados = null;
+                            this.solicitud.id_solicitud = null;
+                            this.solicitud.id_emp = null;
+                            this.listado_soli();
+                            this.listado_emp();
+                            this.cant_solis_actual();
+                            this.suspend_di = false;
+                        });
+                    }
+                },
+
+                deleteEmpleado(item) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: '<p style="font-size: 19px;">¿Está seguro de eliminar al empleado?</p>',
+                        width: 425,
+                        height: 10,
+                        margin: 0,
+                        html: '<p style="font-size: 14px;font-weight: 40;">Esta acción es irreversible.</p>',
+                        showConfirmButton: true,
+                        showCancelButton: true,
+                        confirmButtonText: 'Continuar',
+                        cancelButtonText: 'Cancelar',
+                        cancelButtonColor: 'red',
+                        confirmButtonColor: 'green',
+                        backdrop: 'rgba(255, 0, 0, 0.475)',
+
+                    }).then((result) => {
+                        /* Read more about isConfirmed, isDenied below */
+                        if (result.isConfirmed) {
+                            axios.delete(url2 + Object.assign({}, item).id).then(response => {
+                                Swal.fire({
+                                    title: 'Empleado Eliminado!',
+                                    icon: 'success',
+                                    timer: 980,
+                                    showConfirmButton: false,
+                                });
+                                this.listado_soli();
+                                this.cant_solis_actual();
+                            });
+                        }
+                    })
+                },
+                deleteItem(item) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: '<p style="font-size: 19px;">¿Está seguro de eliminar la solicitud?</p>',
+                        width: 425,
+                        height: 10,
+                        margin: 0,
+                        html: '<p style="font-size: 14px;font-weight: 40;">Esta acción es irreversible.</p>',
+                        showConfirmButton: true,
+                        showCancelButton: true,
+                        confirmButtonText: 'Continuar',
+                        cancelButtonText: 'Cancelar',
+                        cancelButtonColor: 'red',
+                        confirmButtonColor: 'green',
+                        backdrop: 'rgba(255, 0, 0, 0.475)',
+
+                    }).then((result) => {
+                        /* Read more about isConfirmed, isDenied below */
+                        if (result.isConfirmed) {
+                            axios.delete(url + Object.assign({}, item).id).then(response => {
+                                Swal.fire({
+                                    title: 'Solicitud Eliminada!',
+                                    icon: 'success',
+                                    timer: 980,
+                                    showConfirmButton: false,
+                                });
+                                this.listado_soli();
+                                this.cant_solis_actual();
+                            });
+                        }
+                    })
+                },
+                createItem() {
+                    let parametros = {};
+                    if (this.estado_soli == 'Aprobada') {
+                        parametros = {
+                            id_empleado: this.empleado_e, tipo_solicitud: this.tipo_vac_soli, fecha_vac_start: this.rango.start,
+                            fecha_vac_end: this.rango.end, dias_solicitados: this.solicitud.dias_solicitados,
+                            periodo_ini: this.solicitud.peri_ini, periodo_fin: this.solicitud.peri_fin,
+                            estado_solicitud: 3, fecha_aprobacion: this.f_actual
+                        };
+                    }
+                    else {
+                        if (this.estado_soli == 'En revisión') { this.estado_soli = 2; }
+                        else { this.estado_soli = 1; }
+                        parametros = {
+                            id_empleado: this.empleado_e, tipo_solicitud: this.tipo_vac_soli, fecha_vac_start: this.rango.start,
+                            fecha_vac_end: this.rango.end, dias_solicitados: this.solicitud.dias_solicitados,
+                            periodo_ini: this.solicitud.peri_ini, periodo_fin: this.solicitud.peri_fin,
+                            estado_solicitud: this.estado_soli
+                        };
+                    }
+                    //Se hace uso de axios para realizar peticiones HTTP a la API
+                    axios.post(url, parametros)
+                        .then(response => {
+                            if (this.estado_soli == 'Aprobada') {
+                                this.actualizarCantDiasDis(this.empleado_e, this.solicitud.dias_solicitados, "sumar");
+                            }
+                            else {
+                                this.solicitud.dias_solicitados = null;
+                                this.solicitud.id_solicitud = null;
+                                this.solicitud.id_emp = null;
+                                this.listado_soli();
+                                this.listado_emp();
+                                this.cant_solis_actual();
+                                this.resetInfoC();
+                            }
+                        });
+                },
+                refreshItem() {
+                    let parametros = {};
+                    let id = this.solicitud.id_solicitud;
+                    if (this.estados_soli == 'Aprobada') {
+                        parametros = {
+                            estado_solicitud: 3, fecha_aprobacion: this.f_actual
+                        };
+                    }
+                    else if (this.estados_soli == 'Rechazada') {
+                        parametros = {
+                            estado_solicitud: 5, fecha_rechazo: this.f_actual, motivo: this.solicitud.motivo
+                        };
+                    }
+                    else if (this.estados_soli == 'En revisión') {
+                        parametros = { estado_solicitud: 2 };
+                    }
+                    else { parametros = { estado_solicitud: 1 }; }
+                    axios.post(url10 + id, parametros)
+                        .then(response => {
+
+                            if (this.estados_soli == 'Aprobada') {
+                                var c = (this.solicitud.periodo_vac.split('('));
+                                var c2 = c[1].split(' ');
+                                
+                                this.actualizarCantDiasDis(this.solicitud.id_empleado, c2[0], "sumar");
+                                this.resetInfoI();
+                            }
+                            else {
+                                this.resetInfoI();
+                                this.listado_soli();
+                                this.listado_emp();
+                                this.cant_solis_actual();
+                            }
+
+                        });
+                },
+                resetInfoC: function () {
+                    // Borra toda la informaciòn del dialogo create.
+                    this.$refs.create.reset();
+                    this.rango = { start: null, end: null };
+                    this.rango.start = null;
+                    this.rango.end = null;
+                    this.create_di = false;
+                },
+                resetInfoI: function () {
+                    // Borra toda la informaciòn del dialogo edit.
+                    this.edit_di = false;
+                    this.$refs.edit.reset();
+                    this.rango = { start: null, end: null };
+                    this.rango.start = null;
+                    this.rango.end = null;
+
+                },
+                // Funcion para la pantalla completa
+                toggleFullScreen: function () {
+                    if (!document.fullscreenElement) {
+                        document.documentElement.requestFullscreen();
+                        this.icono_full_ex = 'mdi-fullscreen-exit';
+
+                    } else {
+                        if (document.exitFullscreen) {
+                            document.exitFullscreen();
+                            this.icono_full_ex = 'mdi-fullscreen';
+                        }
+                    }
+                },
+                validate: function (texto) {
+                    if (texto == 'crear') {
+                        if (this.$refs.create.validate()) {
+                            this.buscarEmpleado(this.empleado_e);
+                        }
+                    }
+                    else if (texto == 'editar') {
+                        if (this.$refs.edit.validate()) {
+                            this.refreshItem();
+                        }
+                    }
+                    else {
+                        if (this.$refs.susp.validate()) {
+                            this.suspender();
+                        }
+                    }
+                },
+                buscarEmpleado: function (id) {
+                    axios.get(url3 + '/' + id).then(response => {
+                        let datos = response.data;
+                        this.empleado.nom_cargo = datos[0].nom_cargo;
+                        this.empleado.nom_sede = datos[0].nom_sede;
+
+                        this.solicitud.peri_ini = new Date(datos[0].periodo_ini).toISOString('es-CO').split('T')[0];
+                        this.solicitud.peri_fin = new Date(datos[0].periodo_fin_1).toISOString('es-CO').split('T')[0];
+
+                        if (datos[0].dias_dis_periodo_1 >= this.solicitud.dias_solicitados) {
+                            this.validateRango(this.rango.start, this.rango.end);
+                        }
+                        else {
+                            alert('Los días seleccionados sobrepasan los días disponibles para el periodo.');
+                            this.solicitud.dias_solicitados = datos[0].dias_dis_periodo_1;
+                            this.$refs.rango_fecha.reset();
+                            this.rango = { start: null, end: null };
+                            this.rango.start = null;
+                            this.rango.end = null;
+                        }
+                    });
+                },
+                validateRango: function (f1, f2) {
+                    let cargo = this.empleado.nom_cargo;
+                    let sede = this.empleado.nom_sede;
+                    let f3 = f1;
+                    let f4 = f2;
+                    axios.get(url7 + cargo + '/' + sede + '/' + f1 + '/' + f2 + '/' + f3 + '/' + f4)
+                        .then(response => {
+                            let datos = response.data;
+                            if (datos == '') { this.createItem(); }
+                            else {
+                                alert('el rango no está disponible, por favor ingrese otro para continuar con su solicitud.');
+                                this.$refs.rango_fecha.reset();
+                                this.rango = { start: null, end: null };
+                                this.rango.start = null;
+                                this.rango.end = null;
+                            }
+                        });
+                },
+                feriados: function () {
+                    axios.get(url8)
+                        .then(response => {
+                            let datos = response.data;
+                            this.feriados_f.splice(0);
+                            for (var i in datos) {
+                                const mes = parseInt((datos[i].fecha_mes_dia).substring(0, 2));
+                                const dia = parseInt((datos[i].fecha_mes_dia).substring(3, 5));
+                                this.feriados_f.push({
+                                    description: datos[i].descripcion,
+                                    isComplete: false,
+                                    dates: [{ months: mes, days: dia }],
+                                    color: 'red',
+                                });
+                            }
+                        });
+                },
+
+                /* Función para actualizar contraseña del usuario */
+                guardarContrasenia: function(){
+
+                    const userId = this.passwordActual; // Cambiar por el ID del usuario actual
+                    const apiUrl = 'http://localhost:3000/api/usuarios/${userId}/password';
+
+                    
+                    const data = { passwordActual: this.passwordActual };
+
+                    axios.put(apiUrl, data)
+                .   then(response => { 
+                    alert("Se actualizó la contraseña")
+                    this.dialogoContrasenia = false
+                })
+                .catch(error => {
+                    alert("La contraseña no se guardó con éxito")
+
+                    
+                });
+                },
+            }
+        });
+
+    </script>
+
+    <style>
+        /* Works on Firefox */
+        *::-webkit-scrollbar {
+            width: 1px;
+        }
+
+        *::-webkit-scrollbar:hover {
+            width: 7px;
+        }
+
+        /* Estilos barra (thumb) de scroll */
+        *::-webkit-scrollbar-thumb {
+            background: #606F8C;
+            height: 4px;
+            border-radius: 4px;
+        }
+
+        /* Estilos track de scroll */
+        *::-webkit-scrollbar-track {
+            border-radius: 4px;
+            background: #606F8C;
+        }
+
+        *::-webkit-scrollbar-track:hover,
+        *::-webkit-scrollbar-track:active {
+            background: #d3e0fa42;
+        }
+
+        #draw,
+        #nav {
+            background-color: #606F8C;
+        }
+
+        #logout,
+        #fullScreen,
+        #draw_d {
+            color: white;
+            font-size: 18px;
+            font-weight: 1px;
+        }
+
+        #card_t {
+            margin-top: 3%;
+            margin-bottom: 3%;
+            box-shadow: 0 0 9px rgba(33, 33, 33, .2);
+            border-radius: 20px;
+            max-width: 100%;
+            min-width: max-content;
+            padding-bottom: 20px;
+            margin-left: 3px;
+            margin-right: 3px;
+        }
+
+        /*Animación del botón agregar*/
+        #btn_ag {
+            background-color: #606F8C;
+            color: white;
+            padding: 4px;
+            width: 50px;
+        }
+
+        #btn_ag a {
+            color: white;
+            visibility: collapse;
+        }
+
+        #btn_ag .v-icon {
+            margin-left: 75px;
+        }
+
+        #btn_ag:hover {
+            width: 100px;
+        }
+
+        #btn_ag:hover a {
+            visibility: visible;
+            margin-left: -98px;
+        }
+
+        #btn_ag:hover .v-icon {
+            visibility: collapse;
+            transform: translateY(-10%);
+
+        }
+
+        #tg_one:hover {
+            background-color: #00807e;
+        }
+
+        #tg_one:hover .v-icon {
+            color: white;
+        }
+
+        div[class*='swal2'] {
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            font-weight: bold;
+        }
+
+        .btn_eliminar:hover {
+            color: #b90606;
+        }
+
+        .btn_suspender:hover {
+            color: #ff6b09;
+        }
+
+        .btn_editar:hover {
+            color: #04509c;
+        }
+
+        #btn_ac {
+            background-color: #606F8C;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            height: 50px;
+            width: max-content;
+        }
+
+        .edit_c {
+            background-color: white;
+            height: 56px;
+            box-shadow: 0 0 3px rgba(6, 6, 6, 0.2);
+        }
+
+        .v-autocomplete__content.menuable__content__active {
+            border-radius: 10px !important;
+            width: max-content;
+            margin-top: 5px;
+            box-shadow: 0 0 5px #95acdadb;
+
+        }
+
+        .v-autocomplete__content.menuable__content__active::-webkit-scrollbar {
+            width: 0px;
+        }
+
+        * {
+  box-sizing: border-box;
+}
+
+section {
+  position: relative;
+}
+
+.btn-pluss {
+  overflow: hidden;
+  position: relative;
+  display: block;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-radius: 22px;
+  width: 60px;
+  margin: 0 auto;
+  background-color: white;
+  -webkit-transition: width .3s .5s ease, border-radius 1.1s ease;
+  transition: width .3s .5s ease, border-radius 1.1s ease;
+}
+.btn-pluss a {
+  display: block;
+  position: relative;
+  color: #2d5dd7;
+  text-decoration: none;
+  overflow: hidden;
+  padding: 5px;
+  border-radius: 5px;
+}
+.btn-pluss a:hover {
+  text-decoration: inherit;
+  color: white;
+  background-color: #2d5dd7;
+  -webkit-transition: background-color .5s ease;
+  transition: background-color .5s ease;
+}
+.btn-pluss:after {
+  content: '+';
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  display: block;
+  height: 20px;
+  width: 20px;
+  border-radius: 100%;
+  line-height: 20px;
+  text-align: center;
+  font-size: 1.1rem;
+  background-color: #2d5dd7;
+  color: white;
+  -webkit-transform: translateY(-30%) translateX(-30%);
+          transform: translateY(-50%) translateX(-50%);
+  -webkit-transition: all .3s .5s ease;
+  transition: all .3s .5s ease;
+
+  cursor: hand;
+}
+.btn-pluss ul {
+  opacity: 0;
+}
+.btn-pluss ul {
+  margin-top: 25px;
+  opacity: 0;
+  width: 100%;
+  margin-left: 10px;
+  -webkit-transition: all .5s ease;
+  transition: all .5s ease;
+  text-align: center;
+  font-size: 0.9rem;
+}
+.btn-pluss ul li {
+  background-color: #e4e4e4;
+  margin-top: 15px;
+  border-radius: 3px;
+  width: 80%;
+  height: 0px;
+  overflow: hidden;
+  -webkit-transition: height 1s ease;
+  transition: height 1s ease;
+}
+
+.tooltip {
+  position: relative;
+  padding: 5px;
+  border-radius: 5px;
+  width: 70px;
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: bold;
+  margin: 0 auto;
+  margin-bottom: 10px;
+  -webkit-animation-duration: 3s;
+          animation-duration: 3s;
+  -webkit-animation-name: jump;
+          animation-name: jump;
+  -webkit-animation-iteration-count: infinite;
+          animation-iteration-count: infinite;
+  background-color: #fff;
+  color: #2d5dd7;
+  -webkit-transition: all 1s ease;
+  transition: all 1s ease;
+  pointer-events: none;
+}
+.tooltip::after {
+  content: '';
+  position: absolute;
+  -webkit-transform: rotate(35deg);
+          transform: rotate(45deg);
+  display: block;
+  height: 10px;
+  width: 10px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  background-color: inherit;
+}
+.tooltip::before {
+  content: '';
+  color: white;
+}
+
+.btn-pluss-wrapper:hover .tooltip {
+  -webkit-animation-duration: 0s;
+          animation-duration: 0s;
+  -webkit-transition: all 1s ease;
+  transition: all 1s ease;
+  color: white;
+  width: 90px;
+}
+.btn-pluss-wrapper:hover .btn-pluss {
+  width: 150px;
+  border-radius: 15px;
+  padding-bottom: 5px;
+  -webkit-transition: width .3s ease, border-radius .3s ease, padding-bottom .3s ease;
+  transition: width .3s ease, border-radius .3s ease, padding-bottom .3s ease;
+}
+.btn-pluss-wrapper:hover .btn-pluss::after {
+  -webkit-transition: all .3s ease;
+  transition: all .3s ease;
+  left: 50%;
+  top: 10px;
+  -webkit-transform: translateY(-5px) translateX(-50%);
+          transform: translateY(-5px) translateX(-50%);
+}
+.btn-pluss-wrapper:hover .btn-pluss ul {
+  opacity: 1;
+  margin-top: 30px;
+  -webkit-transition: all 1s ease;
+  transition: all 1s ease;
+}
+.btn-pluss-wrapper:hover .btn-pluss li {
+  height: 25px;
+  -webkit-transition: height 1s ease;
+  transition: height 1s ease;
+}
+.btn-pluss-wrapper:hover .btn-pluss li:hover {
+  border-bottom: 1px solid #d2c9c9;
+}
+
+@-webkit-keyframes jump {
+  0% {
+    -webkit-transform: translateY(3px);
+            transform: translateY(3px);
+  }
+  50% {
+    -webkit-transform: translateY(-15px);
+            transform: translateY(-15px);
+  }
+  100% {
+    -webkit-transform: translateY(3px);
+            transform: translateY(3px);
+  }
+}
+
+@keyframes jump {
+  0% {
+    -webkit-transform: translateY(3px);
+            transform: translateY(3px);
+  }
+  50% {
+    -webkit-transform: translateY(-15px);
+            transform: translateY(-15px);
+  }
+  100% {
+    -webkit-transform: translateY(3px);
+            transform: translateY(3px);
+  }
+}
+        
+    </style>
+
+</body>
+
+</html>
